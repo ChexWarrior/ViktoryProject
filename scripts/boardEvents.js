@@ -26,7 +26,27 @@ function displayHexCoords(x, y, z) {
 }
 
 function revealHexAndAdjHexes(hexObject) {
-    alert("STUB!");
+    //create container for hexes
+    createAdjHexContainer(hexObject);
+    //randomly choose hexes
+
+    //display container with hex choices
+
+    //allow dragging of these hexes to adjacent spots
+}
+
+function createAdjHexContainer(hexObject) {
+    var containerXCoord = hexObject.svgElement.getBBox().cx 
+        - ( 2.5 * hexObject.svgElement.getBBox().width);
+    var containerYCoord = hexObject.svgElement.getBBox().cy
+        - (2.5 * _BoardSettings.hexHeight);
+    //TODO: determine width of hex container by amount of hexes to reveal
+    var hexRect = _BoardSettings.boardSVGElement
+        .rect(containerXCoord, containerYCoord, 300, 100)
+        .attr({
+        stroke: "black",
+        fill: "white"
+    });
 }
 
 /*
