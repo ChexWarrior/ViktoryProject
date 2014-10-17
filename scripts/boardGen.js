@@ -56,7 +56,7 @@ var _HexArray = [];
 $(document).ready(function() {
 	var boardElement = Snap("#board");
     _BoardSettings.boardSVGElement = boardElement;
-    attachDOMEvents();
+    attachDOMEvents();    
 });
 
 function clearBoard(boardProperties) {
@@ -142,7 +142,7 @@ function createBoard(numPlayers, boardProperties) {
         //reattach event handlers on board resize?
     }
 }
-
+//testing sublime text git
 function createHexRow(xPos, yPos, rowLength, rowNum, numRows, boardProperties) {    
     var hexWidth = boardProperties.hexWidth; 
     //create each hex for row 
@@ -152,7 +152,7 @@ function createHexRow(xPos, yPos, rowLength, rowNum, numRows, boardProperties) {
         xPos += hexWidth; 
     }
 }
-
+var test = null;
 function createHex(xPos, yPos, rowNum, rowLength, curHexInRow, numRows, boardProperties) {
     //calcuate move to of this hex's path
     var hPos = "M" + xPos.toString() + "," + yPos.toString(); 
@@ -173,7 +173,7 @@ function createHex(xPos, yPos, rowNum, rowLength, curHexInRow, numRows, boardPro
             stroke: "black",
             strokeWidth: 3,
             class: "hex"
-        })
+        })`
         .data("data_isBorderHex", isOnBorder)
         .data("data_xPos", xyzCoords[0])
         .data("data_yPos", xyzCoords[1])
