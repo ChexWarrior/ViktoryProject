@@ -152,7 +152,7 @@ function createHexRow(xPos, yPos, rowLength, rowNum, numRows, boardProperties) {
         xPos += hexWidth; 
     }
 }
-var test = null;
+
 function createHex(xPos, yPos, rowNum, rowLength, curHexInRow, numRows, boardProperties) {
     //calcuate move to of this hex's path
     var hPos = "M" + xPos.toString() + "," + yPos.toString(); 
