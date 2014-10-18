@@ -142,7 +142,7 @@ function createBoard(numPlayers, boardProperties) {
         //reattach event handlers on board resize?
     }
 }
-//testing sublime text git
+
 function createHexRow(xPos, yPos, rowLength, rowNum, numRows, boardProperties) {    
     var hexWidth = boardProperties.hexWidth; 
     //create each hex for row 
