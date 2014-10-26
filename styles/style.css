@@ -3,3 +3,7 @@
 	 height: 900px; 
 	 width:  950px;
 }
+
+.movableHex {
+    z-index: 5;
+}

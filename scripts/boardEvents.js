@@ -26,8 +26,6 @@ function displayHexCoords(x, y, z) {
 }
 
 function revealHexAndAdjHexes(hexObject, boardHexes, boardProperties) {
-    //create container for hexes
-    createAdjHexContainer(hexObject);
     //get all adjacent hexes
     var adjHexes = findAllAdjHexesCoords(hexObject, boardHexes);
     //randomly choose hexes, loop over length of adjHexes
@@ -36,6 +34,7 @@ function revealHexAndAdjHexes(hexObject, boardHexes, boardProperties) {
         adjHexesTerrainType.push(getHexTerrainType(boardProperties));
     }
     //display container with hex choices
+    createAdjHexContainer(hexObject, boardHexes, adjHexes, adjHexesTerrainType);
 
     //allow dragging of these hexes to adjacent spots
 }
@@ -71,7 +70,7 @@ function findAllAdjHexesCoords(hexObject) {
     return adjHexes;
 }
 
-function createAdjHexContainer(hexObject) {
+function createAdjHexContainer(hexObject, boardHexes, adjHexes, adjHexesTerrainType) {
     var containerXCoord = hexObject.svgElement.getBBox().cx 
         - ( 2.5 * hexObject.svgElement.getBBox().width);
     var containerYCoord = hexObject.svgElement.getBBox().cy
@@ -98,14 +97,39 @@ function createAdjHexContainer(hexObject) {
         this.data("origX",this.data("lastX"));
         this.data("origY",this.data("lastY"));
     };
-    _BoardSettings.hexContainer = _BoardSettings.boardSVGElement
-        .rect(containerXCoord, containerYCoord, 300, 100)
+    //create svg group for container and the hex elements
+    var containerGroup = _BoardSettings.boardSVGElement.g();
+    //create container
+    var hexContainer = _BoardSettings.boardSVGElement
+        .rect(containerXCoord, containerYCoord, 500, 100)
         .attr({
         stroke: "black",
         fill: "white"
-    }).drag(moveFunc, startFunc, endFunc);
-
-    return _BoardSettings.hexContainer.getBBox();
+    });
+    //create hexes here
+    var newHexArray = [];
+    var hexPath = _BoardSettings.hexPath;
+    var hexWidth = _BoardSettings.hexWidth.toString();
+    var initalHexX = containerXCoord + (hexWidth/2) + 8;
+    var xAdjustment = 2;
+    var newHex;
+    containerGroup.add(hexContainer);
+   // alert(adjHexes.length);
+    for(var index = 0; index < adjHexes.length; index++) {
+        //access each hex and change its terrain type
+        newHex = _BoardSettings.boardSVGElement.path("M" + (initalHexX + xAdjustment)
+                + "," + (containerYCoord + 10) + hexPath)
+        .attr({
+            stroke: "black",
+            strokeWidth: 3,
+            fill: adjHexesTerrainType[index],
+            class: "movableHex"
+        });
+        containerGroup.add(newHex);
+        xAdjustment += parseInt(hexWidth, 10) + 10;
+    }
+    //apply drag function
+    containerGroup.drag(moveFunc, startFunc, endFunc);
 }
 
 /*
