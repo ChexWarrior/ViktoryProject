@@ -1,5 +1,5 @@
 //HEX EVENT SUBSCRIPTION
-function hexEventSuscriber(hexObject, boardProperties) {
+function hexEventSuscriber(hexObject, boardProperties, hexArray) {
 	hexObject.svgElement.mouseover(function(){
             this.attr({
                 stroke: "red"
@@ -12,7 +12,7 @@ function hexEventSuscriber(hexObject, boardProperties) {
             });
         })
         .dblclick(function() {
-            revealHexAndAdjHexes(hexObject);
+            revealHexAndAdjHexes(hexObject, hexArray, boardProperties);
         });
 }
 //HEX ELEMENT EVENTS
@@ -25,14 +25,50 @@ function displayHexCoords(x, y, z) {
     zCoord.html("Z: " + z);
 }
 
-function revealHexAndAdjHexes(hexObject) {
+function revealHexAndAdjHexes(hexObject, boardHexes, boardProperties) {
     //create container for hexes
     createAdjHexContainer(hexObject);
-    //randomly choose hexes
-
+    //get all adjacent hexes
+    var adjHexes = findAllAdjHexesCoords(hexObject, boardHexes);
+    //randomly choose hexes, loop over length of adjHexes
+    var adjHexesTerrainType = [];
+    for(var index = 0; index < adjHexes.length; index++) {
+        adjHexesTerrainType.push(getHexTerrainType(boardProperties));
+    }
     //display container with hex choices
 
     //allow dragging of these hexes to adjacent spots
+}
+
+function findAllAdjHexesCoords(hexObject) {
+    //array of strings to contain hexs coords
+    var adjHexes = [];
+    //top left hex
+    adjHexes.push((hexObject.svgElement.data("data_xPos") - 1).toString() + 
+                  (hexObject.svgElement.data("data_yPos") + 1).toString() + 
+                  hexObject.svgElement.data("data_zPos").toString());
+    //top right hex
+    adjHexes.push(hexObject.svgElement.data("data_xPos").toString() + 
+                  (hexObject.svgElement.data("data_yPos") + 1).toString() + 
+                  (hexObject.svgElement.data("data_zPos") - 1).toString());
+    //center right
+    adjHexes.push((hexObject.svgElement.data("data_xPos") + 1).toString() + 
+                  hexObject.svgElement.data("data_yPos").toString() + 
+                  (hexObject.svgElement.data("data_zPos") - 1).toString());
+    //bottom right
+    adjHexes.push((hexObject.svgElement.data("data_xPos") + 1).toString() + 
+                  (hexObject.svgElement.data("data_yPos") - 1).toString() + 
+                  hexObject.svgElement.data("data_zPos").toString());
+    //bottom left
+    adjHexes.push(hexObject.svgElement.data("data_xPos").toString() + 
+                  (hexObject.svgElement.data("data_yPos") - 1).toString() + 
+                  (hexObject.svgElement.data("data_zPos") + 1).toString());
+    //center left
+    adjHexes.push((hexObject.svgElement.data("data_xPos") - 1).toString() + 
+                  hexObject.svgElement.data("data_yPos").toString() + 
+                  (hexObject.svgElement.data("data_zPos") + 1).toString());
+
+    return adjHexes;
 }
 
 function createAdjHexContainer(hexObject) {
@@ -41,12 +77,35 @@ function createAdjHexContainer(hexObject) {
     var containerYCoord = hexObject.svgElement.getBBox().cy
         - (2.5 * _BoardSettings.hexHeight);
     //TODO: determine width of hex container by amount of hexes to reveal
-    var hexRect = _BoardSettings.boardSVGElement
+    //create this containers drag functions
+    var moveFunc = function(dx, dy, posx, posy) {
+        //get the last position this element was dragged to (origX, origY)
+        var origX = this.data("origX") == null ? 0 : this.data("origX");
+        var origY = this.data("origY") == null ? 0 : this.data("origY");
+        dx = dx + origX;
+        dy = dy + origY;
+        //store the position were moving it to now (lastX, lastY)
+        this.data("lastX", dx);
+        this.data("lastY", dy);
+        this.transform("t" + dx + "," + dy);
+    };
+    var startFunc = function(x, y) {
+        console.log("MOVE START");
+    };
+    var endFunc = function(e) {
+        //ensure the orig positions are updated since the element seems to rever to 
+        //it's orig position otherwise
+        this.data("origX",this.data("lastX"));
+        this.data("origY",this.data("lastY"));
+    };
+    _BoardSettings.hexContainer = _BoardSettings.boardSVGElement
         .rect(containerXCoord, containerYCoord, 300, 100)
         .attr({
         stroke: "black",
         fill: "white"
-    });
+    }).drag(moveFunc, startFunc, endFunc);
+
+    return _BoardSettings.hexContainer.getBBox();
 }
 
 /*

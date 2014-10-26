@@ -30,6 +30,8 @@ var _BoardSettings = {
     currentZoom: 1,
     //our base Snap.SVG element
     boardSVGElement: null,
+    //reveal hex container
+    hexContainer: null,
     //min number of players
     MIN_AMT_PLAYERS: 2,
     //max amount of players
@@ -173,7 +175,7 @@ function createHex(xPos, yPos, rowNum, rowLength, curHexInRow, numRows, boardPro
             stroke: "black",
             strokeWidth: 3,
             class: "hex"
-        })`
+        })
         .data("data_isBorderHex", isOnBorder)
         .data("data_xPos", xyzCoords[0])
         .data("data_yPos", xyzCoords[1])
@@ -183,7 +185,7 @@ function createHex(xPos, yPos, rowNum, rowLength, curHexInRow, numRows, boardPro
     //add hex object to array of hexes
     _HexArray[arrayKey] = new Hex(hexToDraw); 
     //attach events to hex element
-    hexEventSuscriber(_HexArray[arrayKey], boardProperties); 
+    hexEventSuscriber(_HexArray[arrayKey], boardProperties, _HexArray); 
 }    
 
 function getHexTerrainType(boardProperties) {
