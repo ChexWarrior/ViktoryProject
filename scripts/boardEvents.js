@@ -128,7 +128,7 @@ function createAdjHexContainer(hexObject, boardHexes, adjHexes, adjHexesTerrainT
         containerGroup.add(newHex);
         xAdjustment += parseInt(hexWidth, 10) + 10;
     }
-    //apply drag function
+    //apply drag function test new git
     containerGroup.drag(moveFunc, startFunc, endFunc);
 }
 
