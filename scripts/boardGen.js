@@ -157,10 +157,6 @@ function createHexRow(xPos, yPos, rowLength, rowNum, numRows, boardProperties) {
 }
 
 function createHex(xPos, yPos, rowNum, rowLength, curHexInRow, numRows, boardProperties) {
-    //dragover test func
-    var testFunc = function() {
-        alert("DRAG!");
-    };
     //calcuate move to of this hex's path
     var hPos = "M" + xPos.toString() + "," + yPos.toString(); 
     var hexPath = boardProperties.hexPath;
