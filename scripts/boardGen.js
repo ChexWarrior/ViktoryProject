@@ -37,9 +37,7 @@ var _BoardSettings = {
     //max amount of players
     MAX_AMT_PLAYERS: 8,
     //current turn of game
-    turnIndex: 0,
-    //test bool for group drag event vs indivual drag event
-    canDragGroup: true
+    turnIndex: 0
 };
 //globals and settings for units
 var _UnitGlobals = {
@@ -145,6 +143,7 @@ function createBoard(numPlayers, boardProperties) {
         }
         //reattach event handlers on board resize?
     }
+    hexDragTest(_BoardSettings);
 }
 
 function createHexRow(xPos, yPos, rowLength, rowNum, numRows, boardProperties) {    
@@ -158,6 +157,10 @@ function createHexRow(xPos, yPos, rowLength, rowNum, numRows, boardProperties) {
 }
 
 function createHex(xPos, yPos, rowNum, rowLength, curHexInRow, numRows, boardProperties) {
+    //dragover test func
+    var testFunc = function() {
+        alert("DRAG!");
+    };
     //calcuate move to of this hex's path
     var hPos = "M" + xPos.toString() + "," + yPos.toString(); 
     var hexPath = boardProperties.hexPath;
@@ -182,6 +185,10 @@ function createHex(xPos, yPos, rowNum, rowLength, curHexInRow, numRows, boardPro
         .data("data_xPos", xyzCoords[0])
         .data("data_yPos", xyzCoords[1])
         .data("data_zPos", xyzCoords[2]);
+
+    //test drag over
+    hexToDraw.drag.over = testFunc;
+
     //create hex object
     var arrayKey = xyzCoords[0].toString() + xyzCoords[1].toString() + xyzCoords[2].toString();
     //add hex object to array of hexes
