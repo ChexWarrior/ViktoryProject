@@ -37,7 +37,9 @@ var _BoardSettings = {
     //max amount of players
     MAX_AMT_PLAYERS: 8,
     //current turn of game
-    turnIndex: 0
+    turnIndex: 0,
+    //test bool for group drag event vs indivual drag event
+    canDragGroup: true
 };
 //globals and settings for units
 var _UnitGlobals = {
