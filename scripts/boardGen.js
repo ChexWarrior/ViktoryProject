@@ -143,7 +143,6 @@ function createBoard(numPlayers, boardProperties) {
         }
         //reattach event handlers on board resize?
     }
-    hexDragTest(_BoardSettings);
 }
 
 function createHexRow(xPos, yPos, rowLength, rowNum, numRows, boardProperties) {    
@@ -181,10 +180,6 @@ function createHex(xPos, yPos, rowNum, rowLength, curHexInRow, numRows, boardPro
         .data("data_xPos", xyzCoords[0])
         .data("data_yPos", xyzCoords[1])
         .data("data_zPos", xyzCoords[2]);
-
-    //test drag over
-    hexToDraw.drag.over = testFunc;
-
     //create hex object
     var arrayKey = xyzCoords[0].toString() + xyzCoords[1].toString() + xyzCoords[2].toString();
     //add hex object to array of hexes
