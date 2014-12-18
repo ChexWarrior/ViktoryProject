@@ -45,6 +45,8 @@ function testDragEvent(hexObject, hexArray, boardProperties) {
         //it's orig position otherwise
         this.data("origX",this.data("lastX"));
         this.data("origY",this.data("lastY"));
+        //proves that we can tell the pos of the mouse, and therefore the hex we dragged on top of!!
+        alert("X: " + e.pageX + " Y: " + e.pageY);
     };
 
     hexObject.svgElement.drag(moveFunc, startFunc, endFunc);

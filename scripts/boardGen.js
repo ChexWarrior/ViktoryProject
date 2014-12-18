@@ -52,8 +52,12 @@ var _UnitGlobals = {
     ARTILLERY_MOVE: 2,
     FRIGATE_MOVE: 5
 };
-//will be array of hex objects
+//will be array of hex objects based on x y z coordinates
 var _HexArray = []; 
+//array of hex objects based on x y postion of svg element
+var _HexPosArray = [];
+//appended to _HexPosArray index so we can easily tell which array element were on
+var _HexNumericIndex = 0;
 
 $(document).ready(function() {
 	var boardElement = Snap("#board");
@@ -180,12 +184,18 @@ function createHex(xPos, yPos, rowNum, rowLength, curHexInRow, numRows, boardPro
         .data("data_xPos", xyzCoords[0])
         .data("data_yPos", xyzCoords[1])
         .data("data_zPos", xyzCoords[2]);
-    //create hex object
+    //array key for _hexArray
     var arrayKey = xyzCoords[0].toString() + xyzCoords[1].toString() + xyzCoords[2].toString();
+    //array key for _hexPosArray
+    var hexPosArrayKey = hexToDraw.getBBox().cx.toString() + "|" + hexToDraw.getBBox().cy.toString() + "|" + _HexNumericIndex;
     //add hex object to array of hexes
     _HexArray[arrayKey] = new Hex(hexToDraw); 
+    //add hex object to pos array
+    _HexPosArray[hexPosArrayKey] = _HexArray[arrayKey];
     //attach events to hex element
     hexEventSuscriber(_HexArray[arrayKey], boardProperties, _HexArray); 
+    //increase hex numeri index
+    _HexNumericIndex++;
 }    
 
 function getHexTerrainType(boardProperties) {
