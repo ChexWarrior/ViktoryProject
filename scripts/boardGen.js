@@ -54,11 +54,8 @@ var _UnitGlobals = {
 };
 //will be array of hex objects based on x y z coordinates
 var _HexArray = []; 
-//array of hex objects based on x y postion of svg element
-var _HexPosArray = [];
-//appended to _HexPosArray index so we can easily tell which array element were on
-var _HexNumericIndex = 0;
-
+var _HexIndexedArray =[];
+var _HexIndexedArrayIndex = 0;
 $(document).ready(function() {
 	var boardElement = Snap("#board");
     _BoardSettings.boardSVGElement = boardElement;
@@ -74,6 +71,8 @@ function clearBoard(boardProperties) {
     boardProperties.totalHexes = 132;
     boardProperties.currentHexIndex = 0;
     _HexArray = [];
+    _HexIndexedArray = [];
+    _HexIndexedArrayIndex = 0;
     //remove hexes
     $(".hex").remove(); 
 }
@@ -184,18 +183,17 @@ function createHex(xPos, yPos, rowNum, rowLength, curHexInRow, numRows, boardPro
         .data("data_xPos", xyzCoords[0])
         .data("data_yPos", xyzCoords[1])
         .data("data_zPos", xyzCoords[2]);
+        
+        hexToDraw.data("data_hexCenterX", hexToDraw.getBBox().cx)
+                 .data("data_hexCenterY", hexToDraw.getBBox().cy);
     //array key for _hexArray
     var arrayKey = xyzCoords[0].toString() + xyzCoords[1].toString() + xyzCoords[2].toString();
-    //array key for _hexPosArray
-    var hexPosArrayKey = hexToDraw.getBBox().cx.toString() + "|" + hexToDraw.getBBox().cy.toString() + "|" + _HexNumericIndex;
-    //add hex object to array of hexes
-    _HexArray[arrayKey] = new Hex(hexToDraw); 
-    //add hex object to pos array
-    _HexPosArray[hexPosArrayKey] = _HexArray[arrayKey];
-    //attach events to hex element
+    //log x and y pos of each hex at creation
+    console.log("Hex " + arrayKey + " -> X: " + hexToDraw.getBBox().cx.toString() + " Y: " + hexToDraw.getBBox().cy.toString());
+    _HexArray[arrayKey] = new Hex(hexToDraw);
+    _HexIndexedArray[_HexIndexedArrayIndex] = _HexArray[arrayKey];
+    _HexIndexedArrayIndex++;
     hexEventSuscriber(_HexArray[arrayKey], boardProperties, _HexArray); 
-    //increase hex numeri index
-    _HexNumericIndex++;
 }    
 
 function getHexTerrainType(boardProperties) {

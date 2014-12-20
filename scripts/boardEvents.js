@@ -35,6 +35,7 @@ function testDragEvent(hexObject, hexArray, boardProperties) {
         //store the position were moving it to now (lastX, lastY)
         this.data("lastX", dx);
         this.data("lastY", dy);
+        //actually move the hex...
         this.transform("t" + dx + "," + dy);
     };
     var startFunc = function(x, y) {
@@ -45,11 +46,27 @@ function testDragEvent(hexObject, hexArray, boardProperties) {
         //it's orig position otherwise
         this.data("origX",this.data("lastX"));
         this.data("origY",this.data("lastY"));
-        //proves that we can tell the pos of the mouse, and therefore the hex we dragged on top of!!
-        alert("X: " + e.pageX + " Y: " + e.pageY);
+        console.clear();
+        console.log("Orig center x pos: " + this.data("data_hexCenterX") + " Orig center y pos: " + this.data("data_hexCenterY"));
+        //update hexes new center position
+        this.data("data_hexCenterX", this.getBBox().cx);
+        this.data("data_hexCenterY", this.getBBox().cy);
+        console.log("New center x pos: " + this.data("data_hexCenterX") + " New center y pos: " + this.data("data_hexCenterY"));
+        
+        findClosestHex(this.data("data_hexCenterX"), this.data("data_hexCenterY"), _HexIndexedArray);
     };
 
     hexObject.svgElement.drag(moveFunc, startFunc, endFunc);
+}
+
+function findClosestHex(currentXPos, currentYPos, hexArray) {
+    for(var hexArrayIndex = 0; hexArrayIndex < hexArray.length; hexArrayIndex++) {
+        if(Snap.path.isPointInside(hexArray[hexArrayIndex].svgElement, currentXPos, currentYPos)) {
+            hexArray[hexArrayIndex].svgElement.attr({
+                fill: "green"
+            });
+        }
+    }
 }
 
 function findAllAdjHexesCoords(hexObject) {
