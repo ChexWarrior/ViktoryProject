@@ -39,34 +39,56 @@ function testDragEvent(hexObject, hexArray, boardProperties) {
         this.transform("t" + dx + "," + dy);
     };
     var startFunc = function(x, y) {
-        console.log("MOVE START");
+        //console.log("MOVE START");
     };
     var endFunc = function(e) {
-        //ensure the orig positions are updated since the element seems to rever to 
-        //it's orig position otherwise
-        this.data("origX",this.data("lastX"));
-        this.data("origY",this.data("lastY"));
+        //store dragged hexe's original center point
+        var origHexCenterX = this.data("data_hexCenterX");
+        var origHexCenterY = this.data("data_hexCenterY");
+
         console.clear();
-        console.log("Orig center x pos: " + this.data("data_hexCenterX") + " Orig center y pos: " + this.data("data_hexCenterY"));
-        //update hexes new center position
-        this.data("data_hexCenterX", this.getBBox().cx);
-        this.data("data_hexCenterY", this.getBBox().cy);
-        console.log("New center x pos: " + this.data("data_hexCenterX") + " New center y pos: " + this.data("data_hexCenterY"));
+        console.log("Orig center x pos: " + origHexCenterX  + " Orig center y pos: " + origHexCenterY);
+        //store the new center of the dragged hex...
+        var newHexCenterX = this.getBBox().cx;
+        var newHexCenterY = this.getBBox().cy;
         
-        findClosestHex(this.data("data_hexCenterX"), this.data("data_hexCenterY"), _HexIndexedArray);
+        //console.log("New center x pos: " + newHexCenterX + " New center y pos: " + newHexCenterY);
+        //find which hex we dragged this hex over...
+        var targetHex = getDropHex(newHexCenterX, newHexCenterY, _HexMap);
+        if(targetHex != null) {
+            //ensure the orig positions are updated since the element seems to rever to 
+            //it's orig position otherwise
+            this.data("origX", this.data("lastX"));
+            this.data("origY", this.data("lastY"));
+            //update the hexes new center
+            this.data("data_hexCenterX", newHexCenterX);
+            this.data("data_hexCenterY", newHexCenterY);
+            //change drop hex color to indicate it
+            targetHex.attr({
+                fill: "green"
+            });
+        }
+        else {
+            //console.log("targetHex is null");
+            //in case of failure move hex back to it's originial position
+            //need to ensure all events get properly reattached...
+            this.remove();
+            boardProperties.boardSVGElement.path(hexObject.svgElement.realPath);
+        }
     };
 
     hexObject.svgElement.drag(moveFunc, startFunc, endFunc);
 }
 
-function findClosestHex(currentXPos, currentYPos, hexArray) {
-    for(var hexArrayIndex = 0; hexArrayIndex < hexArray.length; hexArrayIndex++) {
-        if(Snap.path.isPointInside(hexArray[hexArrayIndex].svgElement, currentXPos, currentYPos)) {
-            hexArray[hexArrayIndex].svgElement.attr({
-                fill: "green"
-            });
+function getDropHex(currentXPos, currentYPos, hexMap) {
+    for (var hex in hexMap) {
+        if(Snap.path.isPointInside(hexMap[hex].svgElement, currentXPos, currentYPos)) {
+            //return target hex
+            return hexMap[hex].svgElement;
         }
     }
+
+    return null;
 }
 
 function findAllAdjHexesCoords(hexObject) {
