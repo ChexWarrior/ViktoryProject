@@ -52,10 +52,8 @@ var _UnitGlobals = {
     ARTILLERY_MOVE: 2,
     FRIGATE_MOVE: 5
 };
-//will be array of hex objects based on x y z coordinates
-var _HexArray = []; 
-var _HexIndexedArray =[];
-var _HexIndexedArrayIndex = 0;
+//will map of hex objects with coordinates as key
+var _HexMap = {}; 
 $(document).ready(function() {
 	var boardElement = Snap("#board");
     _BoardSettings.boardSVGElement = boardElement;
@@ -70,9 +68,7 @@ function clearBoard(boardProperties) {
     boardProperties.totalMountainHex = 24;
     boardProperties.totalHexes = 132;
     boardProperties.currentHexIndex = 0;
-    _HexArray = [];
-    _HexIndexedArray = [];
-    _HexIndexedArrayIndex = 0;
+    _HexMap = {};
     //remove hexes
     $(".hex").remove(); 
 }
@@ -171,30 +167,35 @@ function createHex(xPos, yPos, rowNum, rowLength, curHexInRow, numRows, boardPro
     //var hexTerrainType = !isOnBorder ? getHexTerrainType(boardProperties) : "blue";
     //drag and drop, hexes initially blank
     var hexTerrainType = !isOnBorder ? "white" : "blue";
-    //create hex path element
-    var hexToDraw = boardProperties.boardSVGElement.path(hPos + hexPath)
+ 
+    var hexToDraw = createHexSVGElement(boardProperties, hexTerrainType, hPos, hexPath, xyzCoords, xPos, yPos, isOnBorder);
+    //key for _HexMap
+    var hexKey = xyzCoords[0].toString() + xyzCoords[1].toString() + xyzCoords[2].toString();
+    //console.log("Hex " + hexKey + " -> X: " + hexToDraw.getBBox().cx.toString() + " Y: " + hexToDraw.getBBox().cy.toString());
+    _HexMap[hexKey] = new Hex(hexToDraw);
+    hexEventSuscriber(_HexMap[hexKey], boardProperties, _HexMap); 
+}    
+
+function createHexSVGElement(boardProperties, terrainType, hexPosition, hexPath, xyzCoords, xPos, yPos, isOnBorder) {
+    var newHex = boardProperties.boardSVGElement.path(hexPosition + hexPath)
         .attr({
-            fill: hexTerrainType,
+            fill: terrainType,
             stroke: "black",
             strokeWidth: 3,
             class: "hex"
         })
+        .data("data_svgXPos", xPos)
+        .data("data_svgYPos", yPos)
         .data("data_isBorderHex", isOnBorder)
         .data("data_xPos", xyzCoords[0])
         .data("data_yPos", xyzCoords[1])
         .data("data_zPos", xyzCoords[2]);
-        
-        hexToDraw.data("data_hexCenterX", hexToDraw.getBBox().cx)
-                 .data("data_hexCenterY", hexToDraw.getBBox().cy);
-    //array key for _hexArray
-    var arrayKey = xyzCoords[0].toString() + xyzCoords[1].toString() + xyzCoords[2].toString();
-    //log x and y pos of each hex at creation
-    console.log("Hex " + arrayKey + " -> X: " + hexToDraw.getBBox().cx.toString() + " Y: " + hexToDraw.getBBox().cy.toString());
-    _HexArray[arrayKey] = new Hex(hexToDraw);
-    _HexIndexedArray[_HexIndexedArrayIndex] = _HexArray[arrayKey];
-    _HexIndexedArrayIndex++;
-    hexEventSuscriber(_HexArray[arrayKey], boardProperties, _HexArray); 
-}    
+
+    newHex.data("data_hexCenterX", newHex.getBBox().cx)
+        .data("data_hexCenterY", newHex.getBBox().cy);
+
+    return newHex;
+}
 
 function getHexTerrainType(boardProperties) {
     var hexColor = "white";
