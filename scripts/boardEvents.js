@@ -69,7 +69,6 @@ function testDragEvent(hexObject, hexArray, boardProperties) {
             });
         }
         else {
-            //console.log("targetHex is null");
             //in case of failure move hex back to it's originial position
             //need to ensure all events get properly reattached...
             this.remove();
