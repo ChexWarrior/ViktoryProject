@@ -4,7 +4,7 @@ function hexEventSuscriber(hexObject, boardProperties, hexArray) {
             this.attr({
                 stroke: "red"
             });
-            displayHexCoords(this.data("data_xPos"), this.data("data_yPos"), this.data("data_zPos"));
+            //displayHexCoords(this.data("data_xPos"), this.data("data_yPos"), this.data("data_zPos"));
         })
         .mouseout(function(){
             this.attr({
@@ -39,19 +39,17 @@ function testDragEvent(hexObject, hexArray, boardProperties) {
         this.transform("t" + dx + "," + dy);
     };
     var startFunc = function(x, y) {
-        //console.log("MOVE START");
+        console.log("MOVE START");
     };
     var endFunc = function(e) {
         //store dragged hexe's original center point
         var origHexCenterX = this.data("data_hexCenterX");
         var origHexCenterY = this.data("data_hexCenterY");
-
-        console.clear();
-        console.log("Orig center x pos: " + origHexCenterX  + " Orig center y pos: " + origHexCenterY);
+        //console.clear();
+        //console.log("Orig center x pos: " + origHexCenterX  + " Orig center y pos: " + origHexCenterY);
         //store the new center of the dragged hex...
         var newHexCenterX = this.getBBox().cx;
         var newHexCenterY = this.getBBox().cy;
-        
         //console.log("New center x pos: " + newHexCenterX + " New center y pos: " + newHexCenterY);
         //find which hex we dragged this hex over...
         var targetHex = getDropHex(newHexCenterX, newHexCenterY, _HexMap);
@@ -70,38 +68,32 @@ function testDragEvent(hexObject, hexArray, boardProperties) {
         }
         else {
             //in case of failure move hex back to it's originial position
-            //need to ensure all events get properly reattached...
             this.remove();
-            //recreate hex element and replace...
+            //create variables needed to create hex
             //get position of old hex.
-            var hexPosition = hexObject.svgElement.realPath.substring(hexObject.svgElement.realPath.indexOf("M") ,
+            var hexPosition = hexObject.svgElement.realPath.substring(hexObject.svgElement.realPath.indexOf("M"),
                 hexObject.svgElement.realPath.indexOf("l"));
-            console.log(hexPosition);
-            console.log(hexPosition.substring(0, hexPosition.indexOf(",")));
-            console.log(hexPosition.substring(hexPosition.indexOf(",") + 1, hexPosition.length));
+            //console.log(hexPosition);
+            //console.log(hexPosition.substring(0, hexPosition.indexOf(",")));
+            //console.log(hexPosition.substring(hexPosition.indexOf(",") + 1, hexPosition.length));
             var xPos = hexPosition.substring(0, hexPosition.indexOf(","));
             var yPos = hexPosition.substring(hexPosition.indexOf(",") + 1, hexPosition.length);
             //get actual hex path of old hex...
             var hexPath = hexObject.svgElement.realPath.substring(hexObject.svgElement.realPath.indexOf("l"),
                 hexObject.svgElement.realPath.length);
-
-            console.log(hexPath);
-
+            //console.log(hexPath);
             var xyzArray = [hexObject.svgElement.data("data_xPos"), hexObject.svgElement.data("data_yPos"), 
                 hexObject.svgElement.data("data_zPos")];
-
             var hexKey = hexObject.svgElement.data("data_xPos").toString() + hexObject.svgElement.data("data_yPos").toString()
                 + hexObject.svgElement.data("data_zPos").toString();
-
             var newHex = createHexSVGElement(boardProperties, "white", hexPosition, hexPath,
                 xyzArray, xPos, yPos, false);
-
+            //replace old objects svg element with new hex...
             _HexMap[hexKey].svgElement = newHex;
-
+            //resubscribe hex to events
             hexEventSuscriber(_HexMap[hexKey], boardProperties, _HexMap);
         }
     };
-
     hexObject.svgElement.drag(moveFunc, startFunc, endFunc);
 }
 
@@ -112,7 +104,6 @@ function getDropHex(currentXPos, currentYPos, hexMap) {
             return hexMap[hex].svgElement;
         }
     }
-
     return null;
 }
 
