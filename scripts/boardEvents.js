@@ -138,6 +138,18 @@ function findAllAdjHexesCoords(hexObject) {
     return adjHexes;
 }
 
+function displayStartingHexes() {
+    var numPlayers = _BoardSettings.numPlayers;
+    console.log("Number of Players: " + numPlayers);
+    for(var currentPlayerIndex = 0; currentPlayerIndex < numPlayers; currentPlayerIndex++) {
+        displayHexChoices(_BoardSettings.INITIAL_HEX_DRAW, currentPlayerIndex);
+    }
+}
+
+function displayHexChoices(numDrawHexes, currentPLayerTurn) {
+    //create box for number of hexes
+}
+
 //NON-HEX ELEMENT EVENTS
 function attachDOMEvents() {
     //num players DDL
@@ -147,5 +159,6 @@ function attachDOMEvents() {
         } else {
             clearBoard(_BoardSettings);
         }
+        displayStartingHexes();
     });
 }
