@@ -72,7 +72,33 @@ function testDragEvent(hexObject, hexArray, boardProperties) {
             //in case of failure move hex back to it's originial position
             //need to ensure all events get properly reattached...
             this.remove();
-            boardProperties.boardSVGElement.path(hexObject.svgElement.realPath);
+            //recreate hex element and replace...
+            //get position of old hex.
+            var hexPosition = hexObject.svgElement.realPath.substring(hexObject.svgElement.realPath.indexOf("M") ,
+                hexObject.svgElement.realPath.indexOf("l"));
+            console.log(hexPosition);
+            console.log(hexPosition.substring(0, hexPosition.indexOf(",")));
+            console.log(hexPosition.substring(hexPosition.indexOf(",") + 1, hexPosition.length));
+            var xPos = hexPosition.substring(0, hexPosition.indexOf(","));
+            var yPos = hexPosition.substring(hexPosition.indexOf(",") + 1, hexPosition.length);
+            //get actual hex path of old hex...
+            var hexPath = hexObject.svgElement.realPath.substring(hexObject.svgElement.realPath.indexOf("l"),
+                hexObject.svgElement.realPath.length);
+
+            console.log(hexPath);
+
+            var xyzArray = [hexObject.svgElement.data("data_xPos"), hexObject.svgElement.data("data_yPos"), 
+                hexObject.svgElement.data("data_zPos")];
+
+            var hexKey = hexObject.svgElement.data("data_xPos").toString() + hexObject.svgElement.data("data_yPos").toString()
+                + hexObject.svgElement.data("data_zPos").toString();
+
+            var newHex = createHexSVGElement(boardProperties, "white", hexPosition, hexPath,
+                xyzArray, xPos, yPos, false);
+
+            _HexMap[hexKey].svgElement = newHex;
+
+            hexEventSuscriber(_HexMap[hexKey], boardProperties, _HexMap);
         }
     };
 
