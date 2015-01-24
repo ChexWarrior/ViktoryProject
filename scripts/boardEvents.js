@@ -147,7 +147,7 @@ function displayStartingHexes() {
 }
 
 function displayHexChoices(numDrawHexes, currentPLayerTurn) {
-    //create box for number of hexes
+    //create box for number of hexes...
 }
 
 //NON-HEX ELEMENT EVENTS
