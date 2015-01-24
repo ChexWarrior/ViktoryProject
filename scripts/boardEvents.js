@@ -152,23 +152,19 @@ function displayHexChoices(numberOfHexesToDraw) {
 function createHexContainer(numberOfHexesToDraw) {
     var hexWidth = _BoardSettings.hexWidth;
     var hexHeight = _BoardSettings.hexHeight;
-
-    var leftXValueOfBoard = _BoardSettings.boardSVGElement.getBBox().x;
-    var topYValueOfBoard = _BoardSettings.boardSVGElement.getBBox().y;
-    var bottomYValueOfBoard = _BoardSettings.boardSVGElement.getBBox().y2;
-    var middleYValueOfBoard = Math.abs(topYValueOfBoard - bottomYValueOfBoard) / 2;
-    var topMiddleYValueOfBoard = Math.abs(topYValueOfBoard - middleYValueOfBoard) / 2; 
-    
+    var centerXValueOfBoard = _BoardSettings.boardSVGElement.getBBox().cx;
     var hexContainerPadding = 10;
     var hexContainerWidth = (hexWidth * numberOfHexesToDraw) + (hexContainerPadding * numberOfHexesToDraw);
+    var hexContainerTopLeftX = Math.abs(centerXValueOfBoard - hexContainerWidth / 2);
     var hexContainerHeight = hexHeight + (hexContainerPadding * 2);
-    var hexContainerTopLeftX = leftXValueOfBoard + hexContainerPadding;
-    var hexContainerTopLeftY = topMiddleYValueOfBoard;
+    var hexContainerTopLeftY = _BoardSettings.boardSVGElement.getBBox().cy - hexHeight;
 
     var hexContainer = _BoardSettings.boardSVGElement.rect(hexContainerTopLeftX, hexContainerTopLeftY, 
         hexContainerWidth, hexContainerHeight, 10).attr({
             fill: "white",
-            stroke: "black"
+            stroke: "black",
+            strokeWidth: 2,
+            class: "hexContainer"
         });
 
     console.log(_BoardSettings.boardSVGElement.getBBox().cx + "," + _BoardSettings.boardSVGElement.getBBox().cy);   
