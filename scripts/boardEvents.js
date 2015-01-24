@@ -141,13 +141,37 @@ function findAllAdjHexesCoords(hexObject) {
 function displayStartingHexes() {
     var numPlayers = _BoardSettings.numPlayers;
     console.log("Number of Players: " + numPlayers);
-    for(var currentPlayerIndex = 0; currentPlayerIndex < numPlayers; currentPlayerIndex++) {
-        displayHexChoices(_BoardSettings.INITIAL_HEX_DRAW, currentPlayerIndex);
-    }
+    displayHexChoices(_BoardSettings.INITIAL_HEX_DRAW);
 }
 
-function displayHexChoices(numDrawHexes, currentPLayerTurn) {
+function displayHexChoices(numberOfHexesToDraw) {
     //create box for number of hexes...
+    var hexContainer = createHexContainer(numberOfHexesToDraw);
+}
+
+function createHexContainer(numberOfHexesToDraw) {
+    var hexWidth = _BoardSettings.hexWidth;
+    var hexHeight = _BoardSettings.hexHeight;
+
+    var leftXValueOfBoard = _BoardSettings.boardSVGElement.getBBox().x;
+    var topYValueOfBoard = _BoardSettings.boardSVGElement.getBBox().y;
+    var bottomYValueOfBoard = _BoardSettings.boardSVGElement.getBBox().y2;
+    var middleYValueOfBoard = Math.abs(topYValueOfBoard - bottomYValueOfBoard) / 2;
+    var topMiddleYValueOfBoard = Math.abs(topYValueOfBoard - middleYValueOfBoard) / 2; 
+    
+    var hexContainerPadding = 10;
+    var hexContainerWidth = (hexWidth * numberOfHexesToDraw) + (hexContainerPadding * numberOfHexesToDraw);
+    var hexContainerHeight = hexHeight + (hexContainerPadding * 2);
+    var hexContainerTopLeftX = leftXValueOfBoard + hexContainerPadding;
+    var hexContainerTopLeftY = topMiddleYValueOfBoard;
+
+    var hexContainer = _BoardSettings.boardSVGElement.rect(hexContainerTopLeftX, hexContainerTopLeftY, 
+        hexContainerWidth, hexContainerHeight, 10).attr({
+            fill: "white",
+            stroke: "black"
+        });
+
+    console.log(_BoardSettings.boardSVGElement.getBBox().cx + "," + _BoardSettings.boardSVGElement.getBBox().cy);   
 }
 
 //NON-HEX ELEMENT EVENTS

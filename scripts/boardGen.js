@@ -39,7 +39,7 @@ var _BoardSettings = {
     //current turn of game
     turnIndex: 0,
     //constant for initial hex draw
-    INITIAL_HEX_DRAW = 5
+    INITIAL_HEX_DRAW: 5
 };
 //globals and settings for units
 var _UnitGlobals = {
