@@ -15,7 +15,7 @@ function hexEventSuscriber(hexObject, boardProperties, hexArray) {
             testDragEvent(hexObject, hexArray, boardProperties);
         });
 }
-//HEX ELEMENT EVENTS
+//HEX ELEMENT EVENTS!
 function displayHexCoords(x, y, z) {
     var xCoord = $("#hexXCoord");
     var yCoord = $("#hexYCoord");
