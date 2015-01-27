@@ -4,7 +4,7 @@ function hexEventSuscriber(hexObject, boardProperties, hexArray) {
             this.attr({
                 stroke: "red"
             });
-            //displayHexCoords(this.data("data_xPos"), this.data("data_yPos"), this.data("data_zPos"));
+            displayHexCoords(this.data("data_xPos"), this.data("data_yPos"), this.data("data_zPos"));
         })
         .mouseout(function(){
             this.attr({
@@ -44,7 +44,6 @@ function dragHexEventSubscriber(hexSVGElement) {
     };
     var endFunc = function(e) {
         console.log("MOVE END");
-
         var origHexCenterX = this.data("data_hexCenterX");
         var origHexCenterY = this.data("data_hexCenterY");
         //console.clear();
@@ -56,6 +55,13 @@ function dragHexEventSubscriber(hexSVGElement) {
         //find which hex we dragged this hex over...
         var targetHex = getDropHex(newHexCenterX, newHexCenterY, _HexMap);
         if(targetHex != null) {
+            var targetHexObject = _HexMap[targetHex.data("data_xPos").toString() + targetHex.data("data_yPos").toString() +
+                targetHex.data("data_zPos").toString()];
+        }
+        if(targetHex != null 
+            && (targetHexObject.initial && targetHexObject.player == 1)
+            && targetHexObject.hidden) {
+            targetHexObject.hidden = false;
             var targetHexX = targetHex.data("data_xPos").toString();
             var targetHexY = targetHex.data("data_yPos").toString();
             var targetHexZ = targetHex.data("data_zPos").toString();
@@ -66,10 +72,11 @@ function dragHexEventSubscriber(hexSVGElement) {
         } else { //hex has not been dragged on board
             var hexStartingPosX = this.data("startXPos");
             var hexStartingPosY = this.data("startYPos");
+            var oldHexColor = this.attr("fill");
             this.remove();
             //this.transform("t" + this.data("startXPos")+ "," + this.data("startYPos"));
             var dragHex = _BoardSettings.boardSVGElement.path("M" + hexStartingPosX + "," + hexStartingPosY + _BoardSettings.hexPath).attr({
-            fill: "blue",
+            fill: oldHexColor,
             stroke: "black",
             strokeWidth: 2,
             class:  "hexToDrag"
@@ -173,6 +180,7 @@ function getDropHex(currentXPos, currentYPos, hexMap) {
     return null;
 }
 
+
 function findAllAdjHexesCoords(hexObject) {
     //array of strings to contain hexs coords
     var adjHexes = [];
@@ -204,9 +212,8 @@ function findAllAdjHexesCoords(hexObject) {
     return adjHexes;
 }
 
-function displayStartingHexes() {
-    var numPlayers = _BoardSettings.numPlayers;
-    console.log("Number of Players: " + numPlayers);
+function displayStartingHexes(currentPlayerTurn) {
+    //player turn code...
     displayHexChoices(_BoardSettings.INITIAL_HEX_DRAW);
 }
 
@@ -244,7 +251,7 @@ function createHexesToDisplay(hexContainer, numberOfHexesToDraw) {
     var hexStartingPosY = hexContainer.getBBox().y + 3;
 
     var initialHex = _BoardSettings.boardSVGElement.path("M" + hexStartingPosX + "," + hexStartingPosY + _BoardSettings.hexPath).attr({
-        fill: "blue",
+        fill: getHexTerrainType(_BoardSettings),
         stroke: "black",
         strokeWidth: 2,
         class:  "hexToDrag"
@@ -257,7 +264,7 @@ function createHexesToDisplay(hexContainer, numberOfHexesToDraw) {
     for(var index = 0; index < numberOfHexesToDraw; index++) {
         hexStartingPosX += hexWidth + (padding / 2);
         var dragHex = _BoardSettings.boardSVGElement.path("M" + hexStartingPosX + "," + hexStartingPosY + _BoardSettings.hexPath).attr({
-            fill: "blue",
+            fill: getHexTerrainType(_BoardSettings),
             stroke: "black",
             strokeWidth: 2,
             class:  "hexToDrag"
@@ -277,6 +284,7 @@ function attachDOMEvents() {
         } else {
             clearBoard(_BoardSettings);
         }
-        displayStartingHexes();
+        determineStartingHexes(2);
+        displayStartingHexes(_BoardSettings.turnIndex);
     });
 }

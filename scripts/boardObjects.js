@@ -19,6 +19,8 @@ function Hex(svgElement) {
     this.structure = null; 
     //who controls this hex
     this.player = null;
+    //is a starting hex initial hex
+    this.initial = false;
     //METHODS
 }
 
