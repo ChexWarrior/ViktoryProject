@@ -59,54 +59,28 @@ function dragHexEventSubscriber(hexSVGElement) {
             var targetHexX = targetHex.data("data_xPos").toString();
             var targetHexY = targetHex.data("data_yPos").toString();
             var targetHexZ = targetHex.data("data_zPos").toString();
-
             _HexMap[targetHexX + targetHexY + targetHexZ].svgElement.attr({
                 fill: this.attr("fill")
             });
-
             this.remove();
-            //ensure the orig positions are updated since the element seems to rever to 
-            //it's orig position otherwise
-         /*   this.data("origX", this.data("lastX"));
-            this.data("origY", this.data("lastY"));
-            //update the hexes new center
-            this.data("data_hexCenterX", newHexCenterX);
-            this.data("data_hexCenterY", newHexCenterY);
-            //change drop hex color to indicate it
-            targetHex.attr({
-                fill: "green"
-            });*/
-        } else {
-            //in case of failure move hex back to it's originial position
+        } else { //hex has not been dragged on board
+            var hexStartingPosX = this.data("startXPos");
+            var hexStartingPosY = this.data("startYPos");
             this.remove();
-            //create variables needed to create hex
-            //get position of old hex.
-            /*var hexPosition = hexObject.svgElement.realPath.substring(hexObject.svgElement.realPath.indexOf("M"),
-                hexObject.svgElement.realPath.indexOf("l"));
-            //console.log(hexPosition);
-            //console.log(hexPosition.substring(0, hexPosition.indexOf(",")));
-            //console.log(hexPosition.substring(hexPosition.indexOf(",") + 1, hexPosition.length));
-            var xPos = hexPosition.substring(0, hexPosition.indexOf(","));
-            var yPos = hexPosition.substring(hexPosition.indexOf(",") + 1, hexPosition.length);
-            //get actual hex path of old hex...
-            var hexPath = hexObject.svgElement.realPath.substring(hexObject.svgElement.realPath.indexOf("l"),
-                hexObject.svgElement.realPath.length);
-            //console.log(hexPath);
-            var xyzArray = [hexObject.svgElement.data("data_xPos"), hexObject.svgElement.data("data_yPos"), 
-                hexObject.svgElement.data("data_zPos")];
-            var hexKey = hexObject.svgElement.data("data_xPos").toString() + hexObject.svgElement.data("data_yPos").toString()
-                + hexObject.svgElement.data("data_zPos").toString();
-            var newHex = createHexSVGElement(boardProperties, "white", hexPosition, hexPath,
-                xyzArray, xPos, yPos, false);
-            //replace old objects svg element with new hex...
-            _HexMap[hexKey].svgElement = newHex;
-            //resubscribe hex to events
-            hexEventSuscriber(_HexMap[hexKey], boardProperties, _HexMap);*/
+            //this.transform("t" + this.data("startXPos")+ "," + this.data("startYPos"));
+            var dragHex = _BoardSettings.boardSVGElement.path("M" + hexStartingPosX + "," + hexStartingPosY + _BoardSettings.hexPath).attr({
+            fill: "blue",
+            stroke: "black",
+            strokeWidth: 2,
+            class:  "hexToDrag"
+        })
+        .data("startXPos", hexStartingPosX)
+        .data("startYPos", hexStartingPosY);
+        dragHexEventSubscriber(dragHex);
         }
         $(".hexToDrag, .hexContainer").show();
     };
     hexSVGElement.drag(moveFunc, startFunc, endFunc);
-
 }
 //HEX ELEMENT EVENTS!
 function displayHexCoords(x, y, z) {
@@ -274,7 +248,9 @@ function createHexesToDisplay(hexContainer, numberOfHexesToDraw) {
         stroke: "black",
         strokeWidth: 2,
         class:  "hexToDrag"
-    });
+    })
+    .data("startXPos", hexStartingPosX)
+    .data("startYPos", hexStartingPosY);
     dragHexEventSubscriber(initialHex);
     //reduce for initial hex
     numberOfHexesToDraw--;
@@ -285,10 +261,11 @@ function createHexesToDisplay(hexContainer, numberOfHexesToDraw) {
             stroke: "black",
             strokeWidth: 2,
             class:  "hexToDrag"
-        });
+        })
+        .data("startXPos", hexStartingPosX)
+        .data("startYPos", hexStartingPosY);
         dragHexEventSubscriber(dragHex);
     }
-    
 }
 
 //NON-HEX ELEMENT EVENTS
