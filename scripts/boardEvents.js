@@ -161,17 +161,6 @@ function testDragEvent(hexObject, hexArray, boardProperties) {
     hexObject.svgElement.drag(moveFunc, startFunc, endFunc);
 }
 
-function getDropHex(currentXPos, currentYPos, hexMap) {
-    for (var hex in hexMap) {
-        if(Snap.path.isPointInside(hexMap[hex].svgElement, currentXPos, currentYPos)) {
-            //return target hex
-            return hexMap[hex].svgElement;
-        }
-    }
-    return null;
-}
-
-
 function findAllAdjHexesCoords(hexObject) {
     //array of strings to contain hexs coords
     var adjHexes = [];
@@ -272,6 +261,7 @@ function attachDOMEvents() {
     $("#numPlayersSelect").on("change", function() {
         if($(this).val() != "") {
            var boardElement = Snap("#board");
+           $(".hex").remove();
            var gameBoard = new Board(boardElement, parseInt($(this).val(), 10));
            gameBoard.createBoard();
         } 

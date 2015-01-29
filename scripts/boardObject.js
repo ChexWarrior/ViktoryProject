@@ -4,8 +4,6 @@ function Board(boardSVGElement, numberOfPlayers) {
     this.HEX_PATH = "l 30,20 l0,36 l -30,20 l -30,-20 l 0,-36 l 30,-20";
     this.HEX_WIDTH = 62;
     this.HEX_HEIGHT = 58;
-    //total pull of hexes for every board size (DOES NOT INCLUDE BOARDER HEXES!)
-    this.TOTAL_HEXES = 132;
     //amount of hexes revealed on first turn
     this.STARTING_HEX_DRAW = 5;
     this.MIN_AMT_PLAYERS = 2;
@@ -16,6 +14,8 @@ function Board(boardSVGElement, numberOfPlayers) {
     this.MAX_PLAIN_HEXES = 24;
     this.MAX_MOUNTAIN_HEXES = 24;
     //hex colors
+    this.DEFAULT_STROKE_COLOR = "black";
+    this.DEFAULT_STROKE_WIDTH = 3;
     this.BLANK_HEX_COLOR = "white";
     this.WATER_HEX_COLOR = "blue";
     this.GRASS_HEX_COLOR = "greenyellow";
@@ -27,7 +27,7 @@ function Board(boardSVGElement, numberOfPlayers) {
     //will contain all hexes on board
     this.hexMap = {};
     this.numPlayers = numberOfPlayers;
-    //initialize based on number of players
+    //initialize following properties based on number of players
     switch(this.numPlayers) {
         case 2:
         this.totalRows = 9;
@@ -63,14 +63,80 @@ function Board(boardSVGElement, numberOfPlayers) {
         //total number of hexes on board (NOT INCLUDING BORDER HEXES)
         this.numHexes = 37;
     }
+    //total pull of hexes for every board size (DOES NOT INCLUDE BOARDER HEXES!)
+    this.totalPossibleHexes = 132;
     //x and y pos of first hex
     this.initialHex_XPos = 250;
     this.initialHex_YPos = 10;
+
     this.currentAmtWaterHexes = this.MAX_WATER_HEXES;
     this.currentAmtForestHexes = this.MAX_FOREST_HEXES;
     this.currentAmtGrassHexes = this.MAX_GRASS_HEXES;
     this.currentAmtPlainHexes = this.MAX_PLAIN_HEXES;
     this.currentAmtMountainHexes = this.MAX_MOUNTAIN_HEXES;
+}
+
+//TODO: Got to find a way to improve performance
+Board.prototype.getDragoverHex = function(xPos, yPos) {
+    for(var hex in this.hexMap) {
+         if(Snap.path.isPointInside(hexMap[hex].svgElement, currentXPos, currentYPos)) {
+            return hexMap[hex].svgElement;
+         }
+    }
+    return null;
+}
+
+Board.prototype.getHex = function(xPos, yPos, zPos) {
+    return this.hexMap[xPos.toString() + yPos.toString() + zPos.toString()];
+}
+
+Board.prototype.revealHexTerrainType = function() {
+    //1d100
+    var terrainType = this.BLANK_HEX_COLOR;
+    var randomRoll = Math.floor(Math.random() * 100 + 1);
+    //calculate percent chance of particular hex being chosen
+    var chanceOfMountain = Math.floor((this.currentAmtMountainHexes / this.totalPossibleHexes) * 100);
+    var chanceOfPlain = Math.floor((this.currentAmtPlainHexes / this.totalPossibleHexes) * 100);
+    var chanceOfForest = Math.floor((this.currentAmtForestHexes / this.totalPossibleHexes) * 100);
+    var chanceOfGrass = Math.floor((this.currentAmtGrassHexes / this.totalPossibleHexes) * 100);
+    var chanceOfWater = Math.floor((this.currentAmtWaterHexes / this.totalPossibleHexes) * 100);
+    //determine which range roll is in
+    var mountainRange = randomRoll > 0 && randomRoll <= chanceOfMountain;
+    var plainRange = randomRoll > chanceOfMountain && randomRoll <= (chanceOfMountain + chanceOfPlain);
+    var forestRange = randomRoll > (chanceOfMountain + chanceOfPlain) 
+        && randomRoll <= (chanceOfMountain + chanceOfPlain + chanceOfForest);
+    var grassRange = randomRoll > (chanceOfMountain + chanceOfPlain + chanceOfForest)
+        && randomRoll <= (chanceOfMountain + chanceOfPlain + chanceOfForest + chanceOfGrass);
+    var waterRange = randomRoll > (chanceOfMountain + chanceOfPlain + chanceOfForest + chanceOfGrass)
+        && randomRoll <= 100;
+    //when a particular hex is chosen reduce that hex total by one
+    if(mountainRange) {
+        this.currentAmtMountainHexes--;
+        terrainType = this.MOUNTAIN_HEX_COLOR;
+    } else if(plainRange) {
+        this.currentAmtPlainHexes--;
+        terrainType = this.PLAIN_HEX_COLOR;
+    } else if(forestRange) {
+        this.currentAmtForestHexes--;
+        terrainType = this.FOREST_HEX_COLOR;
+    } else if(grassRange) {
+        this.currentAmtGrassHexes--;
+        terrainType = this.GRASS_HEX_COLOR;
+    } else if(waterRange) {
+        this.currentAmtWaterHexes--;
+        terrainType = this.WATER_HEX_COLOR;
+    } else {
+        console.log("ERROR: revealHexTerrainType");
+    }    
+    //reduce total amount of all hexes by one
+    this.totalPossibleHexes--;
+    console.log("Random Roll: " + randomRoll + "\nTotal Amt of Hexes: " + this.totalPossibleHexes + 
+    "\nChance/Range of Mountain: " + chanceOfMountain + "/" + mountainRange +
+    "\nChance/Range of Forest: " + chanceOfForest + "/" + forestRange + 
+    "\nChance/Range of Grassland: " + chanceOfGrass + "/" + grassRange +
+    "\nChance/Range of Plain: " + chanceOfPlain + "/" + plainRange +
+    "\nChance/Range of Water: " + chanceOfWater + "/" + waterRange);
+    return terrainType;
 }
 
 Board.prototype.getHexCoordinates = function(hexRowIndex, hexIndex, rowLength) {
@@ -96,8 +162,8 @@ Board.prototype.createHexSVGElement = function(terrainType, hexPathPos, xyzCoord
     var svgHex = this.boardSVGElement.path(hexPathPos + this.HEX_PATH)
     .attr({
         fill: terrainType,
-        stroke: "black",
-        strokeWidth: 3,
+        stroke: this.DEFAULT_STROKE_COLOR,
+        strokeWidth: this.DEFAULT_STROKE_WIDTH,
         class: "hex"
     })
     .data("data_svgXPos", xPosition)
@@ -120,6 +186,7 @@ Board.prototype.createHex = function(hex_XPos, hex_YPos, currentRowIndex, curren
         || currentRowIndex == 0 || currentRowIndex == this.totalRows - 1;
     var hex_xyzCoords = this.getHexCoordinates(currentRowIndex, currentHexIndex, rowLength);
     //hook for random generation of hexes
+    //var hexTerrainType = !isHexOnBorder ? this.revealHexTerrainType() : this.WATER_HEX_COLOR;
     var hexTerrainType = !isHexOnBorder ? this.BLANK_HEX_COLOR : this.WATER_HEX_COLOR;
     var hex_svgElement = this.createHexSVGElement(hexTerrainType, hexPath_Pos, hex_xyzCoords, hex_XPos, hex_YPos, isHexOnBorder);
     var hexKey = hex_xyzCoords[0].toString() + hex_xyzCoords[1].toString() + hex_xyzCoords[2].toString();
@@ -151,67 +218,4 @@ Board.prototype.createBoard = function() {
         }
         currentY_Pos += this.HEX_HEIGHT;
     }
-}
-
-
-//Hex Constructor
-function Hex(svgElement) {
-    //PROPERTIES
-    //current turn
-    this.turn = 0;
-    //ref to snap.svg element of hex
-    this.svgElement = svgElement;
-    //been revealed?
-    this.hidden = true; 
-    //battle fought on this hex this turn?
-    this.hadBattle = false; 
-    this.isMetropolis = false;
-    this.terrainType = null;
-    //causes cannons and infantry to stop when moving in
-    this.slowTerrain = false;
-    //array of units present on this hex
-    this.units = [];
-    //city, town or metropolis?
-    this.structure = null; 
-    //who controls this hex
-    this.player = null;
-    //is a starting hex initial hex
-    this.initial = false;
-    //METHODS
-}
-
-//Unit Constructor
-function Unit(unitType, svgElement, homeHexIndex) {
-    //PROPERTIES
-    //Infantry, Calvary, Artillery or Frigate
-    this.unitType = unitType;
-    //unit type specific props
-    switch(unitType) {
-        case _UnitGlobals.CALVARY_TYPE:
-            //number of spaces unit can move each turn
-            this.move = _UnitGlobals.CALVARY_MOVE;
-        break;
-        case _UnitGlobals.INFANTRY_TYPE:
-            this.move = _UnitGlobals.INFANTRY_MOVE;
-        break;
-        case _UnitGlobals.ARTILLERY_TYPE:
-            this.move = _UnitGlobals.ARTILLERY_MOVE;
-        break;
-        case _UnitGlobals.FRIGATE_TYPE:
-            this.move = _UnitGlobals.FRIGATE_MOVE;
-        break;
-    }
-    //ref to unit svg element
-    this.svgElement = svgElement;
-    //which player controls this unit
-    this.player = null;
-    //is unit in reserve
-    this.inReserve = true;
-    //is this unit done moving/attacking
-    this.turnDone = false;
-    //is this unit about to attack
-    this.battleStart = false;
-    //hex that this unit is attached to
-    this.homeHexIndex = homeHexIndex;
-    //METHODS
 }
