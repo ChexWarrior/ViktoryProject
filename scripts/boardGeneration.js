@@ -57,8 +57,8 @@ var _UnitGlobals = {
 //will map of hex objects with coordinates as key
 var _HexMap = {}; 
 $(document).ready(function() {
-	var boardElement = Snap("#board");
-    _BoardSettings.boardSVGElement = boardElement;
+	//var boardElement = Snap("#board");
+    //_BoardSettings.boardSVGElement = boardElement;
     attachDOMEvents();    
 });
 

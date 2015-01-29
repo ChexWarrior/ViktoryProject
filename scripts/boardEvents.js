@@ -11,15 +11,6 @@ function hexEventSuscriber(hexObject, boardProperties, hexArray) {
                 stroke: "black"
             });
         });
-        /*.mousedown(function() {
-            $(".hexToDrag, .hexContainer").hide();
-        })
-        .mouseup(function() {
-            $(".hexToDrag, .hexContainer").show();
-        })
-        .dblclick(function() {
-            testDragEvent(hexObject, hexArray, boardProperties);
-        });*/
 }
 
 function dragHexEventSubscriber(hexSVGElement) {
@@ -89,7 +80,7 @@ function dragHexEventSubscriber(hexSVGElement) {
     };
     hexSVGElement.drag(moveFunc, startFunc, endFunc);
 }
-//HEX ELEMENT EVENTS!
+
 function displayHexCoords(x, y, z) {
     var xCoord = $("#hexXCoord");
     var yCoord = $("#hexYCoord");
@@ -280,11 +271,14 @@ function attachDOMEvents() {
     //num players DDL
     $("#numPlayersSelect").on("change", function() {
         if($(this).val() != "") {
-            createBoard($(this).val(), _BoardSettings);
+           // createBoard($(this).val(), _BoardSettings);
+           var boardElement = Snap("#board");
+           var gameBoard = new Board(boardElement, _CONSTANTS, parseInt($(this).val(), 10));
+           gameBoard.createBoard(_CONSTANTS);
         } else {
-            clearBoard(_BoardSettings);
+            //clearBoard(_BoardSettings);
         }
-        determineStartingHexes(2);
-        displayStartingHexes(_BoardSettings.turnIndex);
+        //determineStartingHexes(2);
+        //displayStartingHexes(_BoardSettings.turnIndex);
     });
 }
