@@ -271,13 +271,10 @@ function attachDOMEvents() {
     //num players DDL
     $("#numPlayersSelect").on("change", function() {
         if($(this).val() != "") {
-           // createBoard($(this).val(), _BoardSettings);
            var boardElement = Snap("#board");
-           var gameBoard = new Board(boardElement, _CONSTANTS, parseInt($(this).val(), 10));
-           gameBoard.createBoard(_CONSTANTS);
-        } else {
-            //clearBoard(_BoardSettings);
-        }
+           var gameBoard = new Board(boardElement, parseInt($(this).val(), 10));
+           gameBoard.createBoard();
+        } 
         //determineStartingHexes(2);
         //displayStartingHexes(_BoardSettings.turnIndex);
     });

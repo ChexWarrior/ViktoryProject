@@ -1,31 +1,28 @@
-//object containing global constants
-var _CONSTANTS = {
-    //path to create hex shape
-    HEX_PATH: "l 30,20 l0,36 l -30,20 l -30,-20 l 0,-36 l 30,-20",
-    HEX_WIDTH: 62,
-    HEX_HEIGHT: 58,
-    //total pull of hexes for every board size (DOES NOT INCLUDE BOARDER HEXES!)
-    TOTAL_HEXES: 132,
-    //amount of hexes revealed on first turn
-    STARTING_HEX_DRAW: 5,
-    MIN_AMT_PLAYERS : 2,
-    MAX_AMT_PLAYERS: 8,
-    MAX_WATER_HEXES: 24,
-    MAX_FOREST_HEXES: 24,
-    MAX_GRASS_HEXES: 24,
-    MAX_PLAIN_HEXES: 24,
-    MAX_MOUNTAIN_HEXES: 24,
-    //hex colors
-    BLANK_HEX_COLOR: "white",
-    WATER_HEX_COLOR: "blue",
-    GRASS_HEX_COLOR: "greenyellow",
-    FOREST_HEX_COLOR: "green",
-    MOUNTAIN_HEX_COLOR: "gray",
-    PLAIN_HEX_COLOR: "yellow"
-};
-
 //Game Board Constructor
-function Board(boardSVGElement, constants, numberOfPlayers) {
+function Board(boardSVGElement, numberOfPlayers) {
+    //CONSTANTS
+    this.HEX_PATH = "l 30,20 l0,36 l -30,20 l -30,-20 l 0,-36 l 30,-20";
+    this.HEX_WIDTH = 62;
+    this.HEX_HEIGHT = 58;
+    //total pull of hexes for every board size (DOES NOT INCLUDE BOARDER HEXES!)
+    this.TOTAL_HEXES = 132;
+    //amount of hexes revealed on first turn
+    this.STARTING_HEX_DRAW = 5;
+    this.MIN_AMT_PLAYERS = 2;
+    this.MAX_AMT_PLAYERS = 8;
+    this.MAX_WATER_HEXES = 24;
+    this.MAX_FOREST_HEXES = 24;
+    this.MAX_GRASS_HEXES = 24;
+    this.MAX_PLAIN_HEXES = 24;
+    this.MAX_MOUNTAIN_HEXES = 24;
+    //hex colors
+    this.BLANK_HEX_COLOR = "white";
+    this.WATER_HEX_COLOR = "blue";
+    this.GRASS_HEX_COLOR = "greenyellow";
+    this.FOREST_HEX_COLOR = "green";
+    this.MOUNTAIN_HEX_COLOR = "gray";
+    this.PLAIN_HEX_COLOR = "yellow";
+    //PROPERTIES
     this.boardSVGElement = boardSVGElement;
     //will contain all hexes on board
     this.hexMap = {};
@@ -69,11 +66,11 @@ function Board(boardSVGElement, constants, numberOfPlayers) {
     //x and y pos of first hex
     this.initialHex_XPos = 250;
     this.initialHex_YPos = 10;
-    this.currentAmtWaterHexes = constants.MAX_WATER_HEXES;
-    this.currentAmtForestHexes = constants.MAX_FOREST_HEXES;
-    this.currentAmtGrassHexes = constants.MAX_GRASS_HEXES;
-    this.currentAmtPlainHexes = constants.MAX_PLAIN_HEXES;
-    this.currentAmtMountainHexes = constants.MAX_MOUNTAIN_HEXES;
+    this.currentAmtWaterHexes = this.MAX_WATER_HEXES;
+    this.currentAmtForestHexes = this.MAX_FOREST_HEXES;
+    this.currentAmtGrassHexes = this.MAX_GRASS_HEXES;
+    this.currentAmtPlainHexes = this.MAX_PLAIN_HEXES;
+    this.currentAmtMountainHexes = this.MAX_MOUNTAIN_HEXES;
 }
 
 Board.prototype.getHexCoordinates = function(hexRowIndex, hexIndex, rowLength) {
@@ -95,8 +92,8 @@ Board.prototype.getHexCoordinates = function(hexRowIndex, hexIndex, rowLength) {
     return [currentXPos, currentYPos, currentZPos];
 }
 
-Board.prototype.createHexSVGElement = function(constants, terrainType, hexPathPos, xyzCoords, xPosition, yPosition, isOnBorder) {
-    var svgHex = this.boardSVGElement.path(hexPathPos + constants.HEX_PATH)
+Board.prototype.createHexSVGElement = function(terrainType, hexPathPos, xyzCoords, xPosition, yPosition, isOnBorder) {
+    var svgHex = this.boardSVGElement.path(hexPathPos + this.HEX_PATH)
     .attr({
         fill: terrainType,
         stroke: "black",
@@ -116,44 +113,43 @@ Board.prototype.createHexSVGElement = function(constants, terrainType, hexPathPo
     return svgHex;
 }
 
-Board.prototype.createHex = function(constants, hex_XPos, hex_YPos, currentRowIndex, currentHexIndex, rowLength) {
+Board.prototype.createHex = function(hex_XPos, hex_YPos, currentRowIndex, currentHexIndex, rowLength) {
     //calculate hexes starting position
     var hexPath_Pos = "M" + hex_XPos.toString() + "," + hex_YPos.toString();
     var isHexOnBorder = currentHexIndex == 0 || currentHexIndex == rowLength - 1
         || currentRowIndex == 0 || currentRowIndex == this.totalRows - 1;
     var hex_xyzCoords = this.getHexCoordinates(currentRowIndex, currentHexIndex, rowLength);
     //hook for random generation of hexes
-    var hexTerrainType = !isHexOnBorder ? constants.BLANK_HEX_COLOR : constants.WATER_HEX_COLOR;
-    var hex_svgElement = this.createHexSVGElement(constants, hexTerrainType, hexPath_Pos,
-        hex_xyzCoords, hex_XPos, hex_YPos, isHexOnBorder);
+    var hexTerrainType = !isHexOnBorder ? this.BLANK_HEX_COLOR : this.WATER_HEX_COLOR;
+    var hex_svgElement = this.createHexSVGElement(hexTerrainType, hexPath_Pos, hex_xyzCoords, hex_XPos, hex_YPos, isHexOnBorder);
     var hexKey = hex_xyzCoords[0].toString() + hex_xyzCoords[1].toString() + hex_xyzCoords[2].toString();
     this.hexMap[hexKey] = new Hex(hex_svgElement);
     //subscribe to events
 }
 
-Board.prototype.createHexRow = function(constants, currentRowLength, currentRowIndex, currentXPos, currentYPos) {
+Board.prototype.createHexRow = function(currentRowLength, currentRowIndex, currentXPos, currentYPos) {
     for(var currentHex = 0; currentHex < currentRowLength; currentHex++) {
-        this.createHex(constants, currentXPos, currentYPos, currentRowIndex, currentHex, currentRowLength);
-        currentXPos += constants.HEX_WIDTH;
+        this.createHex(currentXPos, currentYPos, currentRowIndex, currentHex, currentRowLength);
+        currentXPos += this.HEX_WIDTH;
     }   
 }
 
-Board.prototype.createBoard = function(constants) {
+Board.prototype.createBoard = function() {
     var currentRowLength = this.initRowLength;
     var currentX_Pos = this.initialHex_XPos;
     var currentY_Pos = this.initialHex_YPos;
     var middleRow = Math.floor(this.totalRows / 2);
     for(var currentRow = 0; currentRow < this.totalRows; currentRow++) {
-        this.createHexRow(constants, currentRowLength, currentRow, currentX_Pos, currentY_Pos);
+        this.createHexRow(currentRowLength, currentRow, currentX_Pos, currentY_Pos);
 
         if(currentRow < middleRow) {
             currentRowLength++;
-            currentX_Pos -= constants.HEX_WIDTH/ 2;
+            currentX_Pos -= this.HEX_WIDTH/ 2;
         } else {
             currentRowLength--;
-            currentX_Pos += constants.HEX_WIDTH / 2;
+            currentX_Pos += this.HEX_WIDTH / 2;
         }
-        currentY_Pos += constants.HEX_HEIGHT;
+        currentY_Pos += this.HEX_HEIGHT;
     }
 }
 
