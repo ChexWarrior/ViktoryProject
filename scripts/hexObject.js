@@ -23,4 +23,29 @@ function Hex(svgElement) {
     this.initial = false;
     //METHODS
     //attaching events...
+    this.eventSubscriber();
 }
+
+Hex.prototype.eventSubscriber = function() {
+    this.subscribeMouseover();
+    this.subscribeMouseout();
+    //this.subscribeDrag(board);
+}
+
+Hex.prototype.subscribeMouseover = function(board) {
+    this.svgElement.mouseover(function() {
+        this.attr({
+            stroke: CONSTANTS.MOUSE_OVER_STROKE_COLOR
+        });
+    });
+};
+
+Hex.prototype.subscribeMouseout = function(board) {
+    this.svgElement.mouseout(function() {
+        this.attr({
+            stroke: CONSTANTS.DEFAULT_STROKE_COLOR
+        });
+    });
+};
+
+
