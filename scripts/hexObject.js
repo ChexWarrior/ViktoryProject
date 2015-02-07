@@ -32,7 +32,7 @@ Hex.prototype.eventSubscriber = function() {
     //this.subscribeDrag(board);
 }
 
-Hex.prototype.subscribeMouseover = function(board) {
+Hex.prototype.subscribeMouseover = function() {
     this.svgElement.mouseover(function() {
         this.attr({
             stroke: CONSTANTS.MOUSE_OVER_STROKE_COLOR
@@ -40,7 +40,7 @@ Hex.prototype.subscribeMouseover = function(board) {
     });
 };
 
-Hex.prototype.subscribeMouseout = function(board) {
+Hex.prototype.subscribeMouseout = function() {
     this.svgElement.mouseout(function() {
         this.attr({
             stroke: CONSTANTS.DEFAULT_STROKE_COLOR
