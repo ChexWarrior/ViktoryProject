@@ -20,5 +20,7 @@ var CONSTANTS = {
     GRASS_HEX_COLOR: "greenyellow",
     FOREST_HEX_COLOR: "green",
     MOUNTAIN_HEX_COLOR: "gray",
-    PLAIN_HEX_COLOR: "yellow"
+    PLAIN_HEX_COLOR: "yellow",
+    //game constants
+    INITIAL_HEX_DRAW: 5
 };

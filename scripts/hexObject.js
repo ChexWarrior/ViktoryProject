@@ -1,8 +1,6 @@
 //Hex Constructor
 function Hex(svgElement) {
     //PROPERTIES
-    //current turn
-    this.turn = 0;
     //ref to snap.svg element of hex
     this.svgElement = svgElement;
     //been revealed?
@@ -13,8 +11,8 @@ function Hex(svgElement) {
     this.terrainType = null;
     //causes cannons and infantry to stop when moving in
     this.slowTerrain = false;
-    //array of units present on this hex
-    this.units = [];
+    //map of units present on this hex
+    this.units = {};
     //city, town or metropolis?
     this.structure = null; 
     //who controls this hex

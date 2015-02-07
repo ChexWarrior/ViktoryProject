@@ -2,6 +2,8 @@
 function Board(boardSVGElement, numberOfPlayers) {
     //PROPERTIES
     this.boardSVGElement = boardSVGElement;
+    this.currentRound = 0;
+    this.currentPlayerTurn = 0;
     //will contain all hexes on board
     this.hexMap = {};
     this.numPlayers = numberOfPlayers;
@@ -196,4 +198,40 @@ Board.prototype.createBoard = function() {
         }
         currentY_Pos += CONSTANTS.HEX_HEIGHT;
     }
+}
+
+Board.prototype.processTurn = function() {
+    if(this.currentRound == 0) {
+        this.processFirstRound();
+    } else {
+        console.log("Not implemented yet...");
+    }
+}
+
+Board.prototype.createHexContainer = function(numberOfHexesToDraw) {
+    var hexWidth = CONSTANTS.HEX_WIDTH;
+    var hexHeight = CONSTANTS.HEX_HEIGHT;
+    var centerXPosOfBoard = this.boardSVGElement.getBBox().cx;
+    var hexContainerPadding = 10;
+    var hexContainerWidth = (hexWidth * numberOfHexesToDraw) + (hexContainerPadding * numberOfHexesToDraw);
+    var hexContainerTopLeftX = Math.abs(centerXPosOfBoard - hexContainerWidth / 2);
+    var hexContainerHeight = hexHeight + (hexContainerPadding * 2.5);
+    var hexContainerTopLeftY = this.boardSVGElement.getBBox().cy - hexHeight;
+    var hexContainer = this.boardSVGElement.rect(hexContainerTopLeftX, hexContainerTopLeftY, hexContainerWidth,
+        hexContainerHeight, 10).attr({
+            fill: CONSTANTS.BLANK_HEX_COLOR,
+            stroke: CONSTANTS.DEFAULT_STROKE_COLOR,
+            strokeWidth: CONSTANTS.DEFAULT_STROKE_WIDTH,
+            class: "hexContainer"
+        });
+
+    return hexContainer;
+}
+
+Board.prototype.displayHexChoices = function(numberOfHexesToDraw) {
+    var hexContainer = this.createHexContainer(numberOfHexesToDraw);
+}
+
+Board.prototype.processFirstRound = function() {
+    this.displayHexChoices(CONSTANTS.INITIAL_HEX_DRAW);
 }

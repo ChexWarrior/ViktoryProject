@@ -1,17 +1,4 @@
 //HEX EVENT SUBSCRIPTION
-function hexEventSuscriber(hexObject, boardProperties, hexArray) {
-	hexObject.svgElement.mouseover(function(){
-            this.attr({
-                stroke: "red"
-            });
-            displayHexCoords(this.data("data_xPos"), this.data("data_yPos"), this.data("data_zPos"));
-        })
-        .mouseout(function(){
-            this.attr({
-                stroke: "black"
-            });
-        });
-}
 
 function dragHexEventSubscriber(hexSVGElement) {
     var moveFunc = function(dx, dy, posx, posy) {
@@ -197,7 +184,7 @@ function displayStartingHexes(currentPlayerTurn) {
     displayHexChoices(_BoardSettings.INITIAL_HEX_DRAW);
 }
 
-function displayHexChoices(numberOfHexesToDraw) {
+/*function displayHexChoices(numberOfHexesToDraw) {
     //create box for number of hexes...
     var hexContainer = createHexContainer(numberOfHexesToDraw);
     createHexesToDisplay(hexContainer, numberOfHexesToDraw);
@@ -253,7 +240,7 @@ function createHexesToDisplay(hexContainer, numberOfHexesToDraw) {
         .data("startYPos", hexStartingPosY);
         dragHexEventSubscriber(dragHex);
     }
-}
+}*/
 
 //NON-HEX ELEMENT EVENTS
 function attachDOMEvents() {
@@ -264,8 +251,7 @@ function attachDOMEvents() {
            $(".hex").remove();
            var gameBoard = new Board(boardElement, parseInt($(this).val(), 10));
            gameBoard.createBoard();
+           gameBoard.processTurn();
         } 
-        //determineStartingHexes(2);
-        //displayStartingHexes(_BoardSettings.turnIndex);
     });
 }
