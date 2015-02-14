@@ -179,68 +179,6 @@ function findAllAdjHexesCoords(hexObject) {
     return adjHexes;
 }
 
-function displayStartingHexes(currentPlayerTurn) {
-    //player turn code...
-    displayHexChoices(_BoardSettings.INITIAL_HEX_DRAW);
-}
-
-/*function displayHexChoices(numberOfHexesToDraw) {
-    //create box for number of hexes...
-    var hexContainer = createHexContainer(numberOfHexesToDraw);
-    createHexesToDisplay(hexContainer, numberOfHexesToDraw);
-}
-
-function createHexContainer(numberOfHexesToDraw) {
-    var hexWidth = _BoardSettings.hexWidth;
-    var hexHeight = _BoardSettings.hexHeight;
-    var centerXValueOfBoard = _BoardSettings.boardSVGElement.getBBox().cx;
-    var hexContainerPadding = 10;
-    var hexContainerWidth = (hexWidth * numberOfHexesToDraw) + (hexContainerPadding * numberOfHexesToDraw);
-    var hexContainerTopLeftX = Math.abs(centerXValueOfBoard - hexContainerWidth / 2);
-    var hexContainerHeight = hexHeight + (hexContainerPadding * 2.5);
-    var hexContainerTopLeftY = _BoardSettings.boardSVGElement.getBBox().cy - hexHeight;
-    var hexContainer = _BoardSettings.boardSVGElement.rect(hexContainerTopLeftX, hexContainerTopLeftY, 
-        hexContainerWidth, hexContainerHeight, 10).attr({
-            fill: "white",
-            stroke: "black",
-            strokeWidth: 2,
-            class: "hexContainer"
-        });
-    //console.log(_BoardSettings.boardSVGElement.getBBox().cx + "," + _BoardSettings.boardSVGElement.getBBox().cy);
-    return hexContainer;
-}
-
-function createHexesToDisplay(hexContainer, numberOfHexesToDraw) {
-    var padding = 10;
-    var hexWidth = _BoardSettings.hexWidth;
-    var hexHeight = _BoardSettings.hexHeight;
-    var hexStartingPosX = hexContainer.getBBox().x + (hexWidth / 2) + padding;
-    var hexStartingPosY = hexContainer.getBBox().y + 3;
-
-    var initialHex = _BoardSettings.boardSVGElement.path("M" + hexStartingPosX + "," + hexStartingPosY + _BoardSettings.hexPath).attr({
-        fill: getHexTerrainType(_BoardSettings),
-        stroke: "black",
-        strokeWidth: 2,
-        class:  "hexToDrag"
-    })
-    .data("startXPos", hexStartingPosX)
-    .data("startYPos", hexStartingPosY);
-    dragHexEventSubscriber(initialHex);
-    //reduce for initial hex
-    numberOfHexesToDraw--;
-    for(var index = 0; index < numberOfHexesToDraw; index++) {
-        hexStartingPosX += hexWidth + (padding / 2);
-        var dragHex = _BoardSettings.boardSVGElement.path("M" + hexStartingPosX + "," + hexStartingPosY + _BoardSettings.hexPath).attr({
-            fill: getHexTerrainType(_BoardSettings),
-            stroke: "black",
-            strokeWidth: 2,
-            class:  "hexToDrag"
-        })
-        .data("startXPos", hexStartingPosX)
-        .data("startYPos", hexStartingPosY);
-        dragHexEventSubscriber(dragHex);
-    }
-}*/
 
 //NON-HEX ELEMENT EVENTS
 function attachDOMEvents() {
