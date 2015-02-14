@@ -228,8 +228,28 @@ Board.prototype.createHexContainer = function(numberOfHexesToDraw) {
     return hexContainer;
 }
 
+Board.prototype.createHexesToDrag = function(hexContainer, numberOfHexesToDraw) {
+    var hexPadding = 10;
+    var hexWidth = CONSTANTS.HEX_WIDTH;
+    var hexHeight = CONSTANTS.HEX_HEIGHT;
+    var hexStartingPosX = hexContainer.getBBox().x + (hexWidth / 2) + hexPadding;
+    var hexStartingPosY = hexContainer.getBBox().y + 3;
+    var terrainType = "";
+    var hexStartingPos = "";
+
+    for(var hexIndex = 0; hexIndex < numberOfHexesToDraw; hexIndex++) {
+        //createHexSVGElement = function(terrainType, hexPathPos, xyzCoords, xPosition, yPosition, isOnBorder) {
+        terrainType = this.revealHexTerrainType();
+        hexStartingPos = "M" + hexStartingPosX + "," + hexStartingPosY;
+        this.createHexSVGElement(terrainType, hexStartingPos, [0,0,0],"","", false);
+        hexStartingPosX += hexWidth + (hexPadding / 2);
+    }    
+}
+
 Board.prototype.displayHexChoices = function(numberOfHexesToDraw) {
     var hexContainer = this.createHexContainer(numberOfHexesToDraw);
+    this.createHexesToDrag(hexContainer, numberOfHexesToDraw);
+
 }
 
 Board.prototype.processFirstRound = function() {
