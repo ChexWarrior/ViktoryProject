@@ -238,11 +238,11 @@ Board.prototype.createHexesToDrag = function(hexContainer, numberOfHexesToDraw) 
     var hexStartingPos = "";
 
     for(var hexIndex = 0; hexIndex < numberOfHexesToDraw; hexIndex++) {
-        //createHexSVGElement = function(terrainType, hexPathPos, xyzCoords, xPosition, yPosition, isOnBorder) {
         terrainType = this.revealHexTerrainType();
         hexStartingPos = "M" + hexStartingPosX + "," + hexStartingPosY;
         this.createHexSVGElement(terrainType, hexStartingPos, [0,0,0],"","", false);
         hexStartingPosX += hexWidth + (hexPadding / 2);
+        //dragHexEventSubscriber(dragHex);
     }    
 }
 
