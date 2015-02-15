@@ -244,6 +244,9 @@ Board.prototype.createHexesToDrag = function(hexContainer, numberOfHexesToDraw) 
         terrainType = this.revealHexTerrainType();
         hexStartingPos = "M" + hexStartingPosX + "," + hexStartingPosY;
         newHex = this.createHexSVGElement(terrainType, hexStartingPos, [0,0,0],"","", false, "hexToDrag");
+        //store starting positions
+        newHex.data("startXPos", hexStartingPosX);
+        newHex.data("startYPos", hexStartingPosY);
         hexStartingPosX += hexWidth + (hexPadding / 2);
         this.subscribeHexDrag(newHex);
     }    
@@ -319,7 +322,7 @@ Board.prototype.subscribeHexDrag = function(hexSvgElement) {
                 targetHex.data("data_zPos").toString()];
         }
         if(targetHex != null 
-           // && (targetHexObject.initial && targetHexObject.player == 1)
+            && (targetHexObject.initial && targetHexObject.player == 1)
             && targetHexObject.hidden) {
             targetHexObject.hidden = false;
             var targetHexX = targetHex.data("data_xPos").toString();
@@ -334,8 +337,7 @@ Board.prototype.subscribeHexDrag = function(hexSvgElement) {
             var hexStartingPosY = this.data("startYPos");
             var oldHexColor = this.attr("fill");
             this.remove();
-            //this.transform("t" + this.data("startXPos")+ "," + this.data("startYPos"));
-            var dragHex = boardObject.boardSVGElement.path("M" + hexStartingPosX + "," + hexStartingPosY + boardObject.hexPath).attr({
+            var dragHex = boardObject.boardSVGElement.path("M" + hexStartingPosX + "," + hexStartingPosY + CONSTANTS.HEX_PATH).attr({
                 fill: oldHexColor,
                 stroke: "black",
                 strokeWidth: 2,
