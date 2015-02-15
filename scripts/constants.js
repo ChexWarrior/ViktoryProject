@@ -24,3 +24,5 @@ var CONSTANTS = {
     //game constants
     INITIAL_HEX_DRAW: 5
 };
+
+Object.freeze(CONSTANTS);

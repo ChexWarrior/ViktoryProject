@@ -173,7 +173,6 @@ Board.prototype.createHex = function(hex_XPos, hex_YPos, currentRowIndex, curren
     var newHex = new Hex(hex_svgElement);
     this.subscribeHexEvents(newHex.svgElement);
     this.hexMap[hexKey] = newHex;
-    //subscribe to events
 
 }
 
