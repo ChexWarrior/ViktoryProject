@@ -171,7 +171,6 @@ Board.prototype.createHex = function(hex_XPos, hex_YPos, currentRowIndex, curren
     var hex_svgElement = this.createHexSVGElement(hexTerrainType, hexPath_Pos, hex_xyzCoords, hex_XPos, hex_YPos, isHexOnBorder);
     var hexKey = hex_xyzCoords[0].toString() + hex_xyzCoords[1].toString() + hex_xyzCoords[2].toString();
     this.hexMap[hexKey] = new Hex(hex_svgElement);
-    //subscribe to events
 }
 
 Board.prototype.createHexRow = function(currentRowLength, currentRowIndex, currentXPos, currentYPos) {

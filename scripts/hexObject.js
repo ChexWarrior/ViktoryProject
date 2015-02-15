@@ -27,7 +27,11 @@ function Hex(svgElement) {
 Hex.prototype.eventSubscriber = function() {
     this.subscribeMouseover();
     this.subscribeMouseout();
-    //this.subscribeDrag(board);
+    this.subscribeDrag(board);
+}
+
+Hex.prototype.subscribeDrag = function() {
+
 }
 
 Hex.prototype.subscribeMouseover = function() {
@@ -45,5 +49,3 @@ Hex.prototype.subscribeMouseout = function() {
         });
     });
 };
-
-
