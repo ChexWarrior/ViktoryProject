@@ -381,3 +381,5 @@ Board.prototype.determineStartingHexes = function() {
         default:
     }
 }
+
+//TODO: review and consolidate hex generation in drag events
