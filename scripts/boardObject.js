@@ -170,8 +170,11 @@ Board.prototype.createHex = function(hex_XPos, hex_YPos, currentRowIndex, curren
     var hexTerrainType = !isHexOnBorder ? CONSTANTS.BLANK_HEX_COLOR : CONSTANTS.WATER_HEX_COLOR;
     var hex_svgElement = this.createHexSVGElement(hexTerrainType, hexPath_Pos, hex_xyzCoords, hex_XPos, hex_YPos, isHexOnBorder);
     var hexKey = hex_xyzCoords[0].toString() + hex_xyzCoords[1].toString() + hex_xyzCoords[2].toString();
-    this.hexMap[hexKey] = new Hex(hex_svgElement);
+    var newHex = new Hex(hex_svgElement);
+    this.subscribeHexEvents(newHex.svgElement);
+    this.hexMap[hexKey] = newHex;
     //subscribe to events
+
 }
 
 Board.prototype.createHexRow = function(currentRowLength, currentRowIndex, currentXPos, currentYPos) {
@@ -254,4 +257,25 @@ Board.prototype.displayHexChoices = function(numberOfHexesToDraw) {
 
 Board.prototype.processFirstRound = function() {
     this.displayHexChoices(CONSTANTS.INITIAL_HEX_DRAW);
+}
+
+Board.prototype.subscribeHexEvents = function(hexSvgElement) {    
+   this.subscribeMouseover(hexSvgElement);
+   this.subscribeMouseout(hexSvgElement);
+}
+
+Board.prototype.subscribeMouseover = function(hexSvgElement) {
+    hexSvgElement.mouseover(function() {
+        this.attr({
+            stroke: CONSTANTS.MOUSE_OVER_STROKE_COLOR
+        });
+    });
+}
+
+Board.prototype.subscribeMouseout = function(hexSvgElement) {
+     hexSvgElement.mouseout(function() {
+        this.attr({
+            stroke: CONSTANTS.DEFAULT_STROKE_COLOR
+        });
+    });
 }

@@ -19,31 +19,4 @@ function Hex(svgElement) {
     this.player = null;
     //is a starting hex initial hex
     this.initial = false;
-    //METHODS
-    //attaching events...
-    this.eventSubscriber();
 }
-
-Hex.prototype.eventSubscriber = function() {
-    this.subscribeMouseover();
-    this.subscribeMouseout();
-    //this.subscribeDrag(board);
-}
-
-Hex.prototype.subscribeMouseover = function() {
-    this.svgElement.mouseover(function() {
-        this.attr({
-            stroke: CONSTANTS.MOUSE_OVER_STROKE_COLOR
-        });
-    });
-};
-
-Hex.prototype.subscribeMouseout = function() {
-    this.svgElement.mouseout(function() {
-        this.attr({
-            stroke: CONSTANTS.DEFAULT_STROKE_COLOR
-        });
-    });
-};
-
-
