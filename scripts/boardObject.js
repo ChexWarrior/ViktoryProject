@@ -59,8 +59,8 @@ function Board(boardSVGElement, numberOfPlayers) {
 //TODO: Improve performance
 Board.prototype.getDragoverHex = function(xPos, yPos) {
     for(var hex in this.hexMap) {
-         if(Snap.path.isPointInside(hexMap[hex].svgElement, currentXPos, currentYPos)) {
-            return hexMap[hex].svgElement;
+         if(Snap.path.isPointInside(this.hexMap[hex].svgElement, xPos, yPos)) {
+            return this.hexMap[hex].svgElement;
          }
     }
     return null;
@@ -138,13 +138,13 @@ Board.prototype.getHexCoordinates = function(hexRowIndex, hexIndex, rowLength) {
     return [currentXPos, currentYPos, currentZPos];
 }
 
-Board.prototype.createHexSVGElement = function(terrainType, hexPathPos, xyzCoords, xPosition, yPosition, isOnBorder) {
+Board.prototype.createHexSVGElement = function(terrainType, hexPathPos, xyzCoords, xPosition, yPosition, isOnBorder, cssClass) {
     var svgHex = this.boardSVGElement.path(hexPathPos + CONSTANTS.HEX_PATH)
     .attr({
         fill: terrainType,
         stroke: CONSTANTS.DEFAULT_STROKE_COLOR,
         strokeWidth: CONSTANTS.DEFAULT_STROKE_WIDTH,
-        class: "hex"
+        class: cssClass
     })
     .data("data_svgXPos", xPosition)
     .data("data_svgYPos", yPosition)
@@ -168,7 +168,7 @@ Board.prototype.createHex = function(hex_XPos, hex_YPos, currentRowIndex, curren
     //hook for random generation of hexes
     //var hexTerrainType = !isHexOnBorder ? this.revealHexTerrainType() : this.WATER_HEX_COLOR;
     var hexTerrainType = !isHexOnBorder ? CONSTANTS.BLANK_HEX_COLOR : CONSTANTS.WATER_HEX_COLOR;
-    var hex_svgElement = this.createHexSVGElement(hexTerrainType, hexPath_Pos, hex_xyzCoords, hex_XPos, hex_YPos, isHexOnBorder);
+    var hex_svgElement = this.createHexSVGElement(hexTerrainType, hexPath_Pos, hex_xyzCoords, hex_XPos, hex_YPos, isHexOnBorder,"hex");
     var hexKey = hex_xyzCoords[0].toString() + hex_xyzCoords[1].toString() + hex_xyzCoords[2].toString();
     var newHex = new Hex(hex_svgElement);
     this.subscribeHexEvents(newHex.svgElement);
@@ -238,12 +238,14 @@ Board.prototype.createHexesToDrag = function(hexContainer, numberOfHexesToDraw) 
     var hexStartingPosY = hexContainer.getBBox().y + 3;
     var terrainType = "";
     var hexStartingPos = "";
+    var newHex = null;
 
     for(var hexIndex = 0; hexIndex < numberOfHexesToDraw; hexIndex++) {
         terrainType = this.revealHexTerrainType();
         hexStartingPos = "M" + hexStartingPosX + "," + hexStartingPosY;
-        this.createHexSVGElement(terrainType, hexStartingPos, [0,0,0],"","", false);
+        newHex = this.createHexSVGElement(terrainType, hexStartingPos, [0,0,0],"","", false, "hexToDrag");
         hexStartingPosX += hexWidth + (hexPadding / 2);
+        this.subscribeHexDrag(newHex);
         //dragHexEventSubscriber(dragHex);
     }    
 }
@@ -259,11 +261,12 @@ Board.prototype.processFirstRound = function() {
 }
 
 Board.prototype.subscribeHexEvents = function(hexSvgElement) {    
-   this.subscribeMouseover(hexSvgElement);
-   this.subscribeMouseout(hexSvgElement);
+   this.subscribeHexMouseover(hexSvgElement);
+   this.subscribeHexMouseout(hexSvgElement);
+   //this.subscribeHexDrag(hexSvgElement);
 }
 
-Board.prototype.subscribeMouseover = function(hexSvgElement) {
+Board.prototype.subscribeHexMouseover = function(hexSvgElement) {
     hexSvgElement.mouseover(function() {
         this.attr({
             stroke: CONSTANTS.MOUSE_OVER_STROKE_COLOR
@@ -271,10 +274,79 @@ Board.prototype.subscribeMouseover = function(hexSvgElement) {
     });
 }
 
-Board.prototype.subscribeMouseout = function(hexSvgElement) {
+Board.prototype.subscribeHexMouseout = function(hexSvgElement) {
      hexSvgElement.mouseout(function() {
         this.attr({
             stroke: CONSTANTS.DEFAULT_STROKE_COLOR
         });
     });
+}
+
+Board.prototype.subscribeHexDrag = function(hexSvgElement) {
+    var boardObject = this;
+    var moveFunc = function(dx, dy, posx, posy) {
+        //get the last position this element was dragged to (origX, origY)
+        var origX = this.data("origX") == null ? 0 : this.data("origX");
+        var origY = this.data("origY") == null ? 0 : this.data("origY");
+        dx = dx + origX;
+        dy = dy + origY;
+        //store the position were moving it to now (lastX, lastY)
+        this.data("lastX", dx);
+        this.data("lastY", dy);
+        //actually move the hex...
+        this.transform("t" + dx + "," + dy);
+    };
+    var startFunc = function(x, y) {
+        console.log("MOVE START");
+        this.attr({
+            class: "movingHex"
+        });
+        $(".hexToDrag, .hexContainer").hide();
+    };
+    var endFunc = function(e) {
+        console.log("MOVE END");
+        var origHexCenterX = this.data("data_hexCenterX");
+        var origHexCenterY = this.data("data_hexCenterY");
+        //console.clear();
+        //console.log("Orig center x pos: " + origHexCenterX  + " Orig center y pos: " + origHexCenterY);
+        //store the new center of the dragged hex...
+        var newHexCenterX = this.getBBox().cx;
+        var newHexCenterY = this.getBBox().cy;
+        //console.log("New center x pos: " + newHexCenterX + " New center y pos: " + newHexCenterY);
+        //find which hex we dragged this hex over...
+        var targetHex = boardObject.getDragoverHex(newHexCenterX, newHexCenterY);
+        if(targetHex != null) {
+            var targetHexObject = boardObject.hexMap[targetHex.data("data_xPos").toString() + targetHex.data("data_yPos").toString() +
+                targetHex.data("data_zPos").toString()];
+        }
+        if(targetHex != null 
+           // && (targetHexObject.initial && targetHexObject.player == 1)
+            && targetHexObject.hidden) {
+            targetHexObject.hidden = false;
+            var targetHexX = targetHex.data("data_xPos").toString();
+            var targetHexY = targetHex.data("data_yPos").toString();
+            var targetHexZ = targetHex.data("data_zPos").toString();
+            boardObject.hexMap[targetHexX + targetHexY + targetHexZ].svgElement.attr({
+                fill: this.attr("fill")
+            });
+            this.remove();
+        } else { //hex has not been dragged on board
+            var hexStartingPosX = this.data("startXPos");
+            var hexStartingPosY = this.data("startYPos");
+            var oldHexColor = this.attr("fill");
+            this.remove();
+            //this.transform("t" + this.data("startXPos")+ "," + this.data("startYPos"));
+            var dragHex = boardObject.boardSVGElement.path("M" + hexStartingPosX + "," + hexStartingPosY + boardObject.hexPath).attr({
+                fill: oldHexColor,
+                stroke: "black",
+                strokeWidth: 2,
+                class:  "hexToDrag"
+            })
+            .data("startXPos", hexStartingPosX)
+            .data("startYPos", hexStartingPosY);
+            boardObject.subscribeHexDrag(dragHex);
+        }
+        $(".hexToDrag, .hexContainer").show();
+    };
+    hexSvgElement.drag(moveFunc, startFunc, endFunc);
 }

@@ -20,7 +20,3 @@ function Hex(svgElement) {
     //is a starting hex initial hex
     this.initial = false;
 }
-
-Hex.prototype.subscribeDrag = function() {
-
-}
