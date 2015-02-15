@@ -246,7 +246,6 @@ Board.prototype.createHexesToDrag = function(hexContainer, numberOfHexesToDraw) 
         newHex = this.createHexSVGElement(terrainType, hexStartingPos, [0,0,0],"","", false, "hexToDrag");
         hexStartingPosX += hexWidth + (hexPadding / 2);
         this.subscribeHexDrag(newHex);
-        //dragHexEventSubscriber(dragHex);
     }    
 }
 
@@ -349,4 +348,34 @@ Board.prototype.subscribeHexDrag = function(hexSvgElement) {
         $(".hexToDrag, .hexContainer").show();
     };
     hexSvgElement.drag(moveFunc, startFunc, endFunc);
+}
+
+Board.prototype.determineStartingHexes = function() {
+    switch(this.numPlayers) {
+        case 2:
+            this.hexMap["-330"].initial = true;
+            this.hexMap["-330"].player = 1;
+            this.hexMap["-23-1"].initial = true;
+            this.hexMap["-23-1"].player = 1;
+            this.hexMap["-13-2"].initial = true;
+            this.hexMap["-13-2"].player = 1;
+            this.hexMap["-321"].initial = true;
+            this.hexMap["-321"].player = 1;
+            this.hexMap["-312"].initial = true;
+            this.hexMap["-312"].player = 1;
+            //second player initial hexes
+            this.hexMap["3-30"].initial = true;
+            this.hexMap["3-30"].player = 2;
+            this.hexMap["3-2-1"].initial = true;
+            this.hexMap["3-2-1"].player = 2;
+            this.hexMap["3-1-2"].initial = true;
+            this.hexMap["3-1-2"].player = 2;
+            this.hexMap["2-31"].initial = true;
+            this.hexMap["2-31"].player = 2;
+            this.hexMap["1-32"].initial = true;
+            this.hexMap["1-32"].player = 2;
+        break;
+        //TODO: cases for other number of players
+        default:
+    }
 }
