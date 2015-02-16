@@ -243,10 +243,7 @@ Board.prototype.createHexesToDrag = function(hexContainer, numberOfHexesToDraw) 
     for(var hexIndex = 0; hexIndex < numberOfHexesToDraw; hexIndex++) {
         terrainType = this.revealHexTerrainType();
         hexStartingPos = "M" + hexStartingPosX + "," + hexStartingPosY;
-        newHex = this.createHexSVGElement(terrainType, hexStartingPos, [0,0,0],"","", false, "hexToDrag");
-        //store starting positions
-        newHex.data("startXPos", hexStartingPosX);
-        newHex.data("startYPos", hexStartingPosY);
+        newHex = this.createHexSVGElement(terrainType, hexStartingPos, [0,0,0], hexStartingPosX, hexStartingPosY, false, "hexToDrag");
         hexStartingPosX += hexWidth + (hexPadding / 2);
         this.subscribeHexDrag(newHex);
     }    
@@ -309,42 +306,40 @@ Board.prototype.subscribeHexDrag = function(hexSvgElement) {
         console.log("MOVE END");
         var origHexCenterX = this.data("data_hexCenterX");
         var origHexCenterY = this.data("data_hexCenterY");
-        //console.clear();
-        //console.log("Orig center x pos: " + origHexCenterX  + " Orig center y pos: " + origHexCenterY);
         //store the new center of the dragged hex...
         var newHexCenterX = this.getBBox().cx;
         var newHexCenterY = this.getBBox().cy;
-        //console.log("New center x pos: " + newHexCenterX + " New center y pos: " + newHexCenterY);
         //find which hex we dragged this hex over...
         var targetHex = boardObject.getDragoverHex(newHexCenterX, newHexCenterY);
         if(targetHex != null) {
-            var targetHexObject = boardObject.hexMap[targetHex.data("data_xPos").toString() + targetHex.data("data_yPos").toString() +
-                targetHex.data("data_zPos").toString()];
+            var targetHexObject = boardObject.getHex(targetHex.data("data_xPos"), targetHex.data("data_yPos"), 
+                targetHex.data("data_zPos"));
         }
-        if(targetHex != null 
-            && (targetHexObject.initial && targetHexObject.player == 1)
-            && targetHexObject.hidden) {
+        if(targetHex != null &&
+            //and is the drag over hex an initial hex and the correct players inital hex
+            (targetHexObject.initial && targetHexObject.player == boardObject.currentPlayerTurn) &&
+            //and the hex hasn't been revealed
+            targetHexObject.hidden) {
             targetHexObject.hidden = false;
             var targetHexX = targetHex.data("data_xPos").toString();
             var targetHexY = targetHex.data("data_yPos").toString();
             var targetHexZ = targetHex.data("data_zPos").toString();
-            boardObject.hexMap[targetHexX + targetHexY + targetHexZ].svgElement.attr({
+            boardObject.getHex(targetHexX , targetHexY, targetHexZ).svgElement.attr({
                 fill: this.attr("fill")
             });
             this.remove();
         } else { //hex has not been dragged on board
-            var hexStartingPosX = this.data("startXPos");
-            var hexStartingPosY = this.data("startYPos");
-            var oldHexColor = this.attr("fill");
+            var hexStartingPosX = this.data("data_svgXPos");
+            var hexStartingPosY = this.data("data_svgYPos");
+            var oldHexPathPos = "M" + hexStartingPosX + "," + hexStartingPosY;
+            var oldTerrainType = this.attr("fill");
+            var oldXYZCoords = [this.data("data_xPos"), this.data("data_yPos"), this.data("data_zPos")];
+            var oldIsOnBorder = this.data("data_isBorderHex");
             this.remove();
-            var dragHex = boardObject.boardSVGElement.path("M" + hexStartingPosX + "," + hexStartingPosY + CONSTANTS.HEX_PATH).attr({
-                fill: oldHexColor,
-                stroke: "black",
-                strokeWidth: 2,
-                class:  "hexToDrag"
-            })
-            .data("startXPos", hexStartingPosX)
-            .data("startYPos", hexStartingPosY);
+            var dragHex = boardObject.createHexSVGElement(oldTerrainType, oldHexPathPos, oldXYZCoords, hexStartingPosX, 
+                hexStartingPosY, oldIsOnBorder, "hexToDrag");
+            dragHex.data("data_svgXPos", hexStartingPosX)
+            dragHex.data("data_svgYPos", hexStartingPosY);
             boardObject.subscribeHexDrag(dragHex);
         }
         $(".hexToDrag, .hexContainer").show();
@@ -356,30 +351,28 @@ Board.prototype.determineStartingHexes = function() {
     switch(this.numPlayers) {
         case 2:
             this.hexMap["-330"].initial = true;
-            this.hexMap["-330"].player = 1;
+            this.hexMap["-330"].player = 0;
             this.hexMap["-23-1"].initial = true;
-            this.hexMap["-23-1"].player = 1;
+            this.hexMap["-23-1"].player = 0;
             this.hexMap["-13-2"].initial = true;
-            this.hexMap["-13-2"].player = 1;
+            this.hexMap["-13-2"].player = 0;
             this.hexMap["-321"].initial = true;
-            this.hexMap["-321"].player = 1;
+            this.hexMap["-321"].player = 0;
             this.hexMap["-312"].initial = true;
-            this.hexMap["-312"].player = 1;
+            this.hexMap["-312"].player = 0;
             //second player initial hexes
             this.hexMap["3-30"].initial = true;
-            this.hexMap["3-30"].player = 2;
+            this.hexMap["3-30"].player = 1;
             this.hexMap["3-2-1"].initial = true;
-            this.hexMap["3-2-1"].player = 2;
+            this.hexMap["3-2-1"].player = 1;
             this.hexMap["3-1-2"].initial = true;
-            this.hexMap["3-1-2"].player = 2;
+            this.hexMap["3-1-2"].player = 1;
             this.hexMap["2-31"].initial = true;
-            this.hexMap["2-31"].player = 2;
+            this.hexMap["2-31"].player = 1;
             this.hexMap["1-32"].initial = true;
-            this.hexMap["1-32"].player = 2;
+            this.hexMap["1-32"].player = 1;
         break;
         //TODO: cases for other number of players
         default:
     }
 }
-
-//TODO: review and consolidate hex generation in drag events
