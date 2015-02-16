@@ -138,7 +138,8 @@ Board.prototype.getHexCoordinates = function(hexRowIndex, hexIndex, rowLength) {
     return [currentXPos, currentYPos, currentZPos];
 }
 
-Board.prototype.createHexSVGElement = function(terrainType, hexPathPos, xyzCoords, xPosition, yPosition, isOnBorder, cssClass) {
+Board.prototype.createHexSVGElement = function(terrainType, xyzCoords, xPosition, yPosition, isOnBorder, cssClass) {
+    var hexPathPos = "M" + xPosition.toString() + "," + yPosition.toString();
     var svgHex = this.boardSVGElement.path(hexPathPos + CONSTANTS.HEX_PATH)
     .attr({
         fill: terrainType,
@@ -160,15 +161,14 @@ Board.prototype.createHexSVGElement = function(terrainType, hexPathPos, xyzCoord
 }
 
 Board.prototype.createHex = function(hex_XPos, hex_YPos, currentRowIndex, currentHexIndex, rowLength) {
-    //calculate hexes starting position
-    var hexPath_Pos = "M" + hex_XPos.toString() + "," + hex_YPos.toString();
+    //calculate hexes starting position    
     var isHexOnBorder = currentHexIndex == 0 || currentHexIndex == rowLength - 1
         || currentRowIndex == 0 || currentRowIndex == this.totalRows - 1;
     var hex_xyzCoords = this.getHexCoordinates(currentRowIndex, currentHexIndex, rowLength);
     //hook for random generation of hexes
     //var hexTerrainType = !isHexOnBorder ? this.revealHexTerrainType() : this.WATER_HEX_COLOR;
     var hexTerrainType = !isHexOnBorder ? CONSTANTS.BLANK_HEX_COLOR : CONSTANTS.WATER_HEX_COLOR;
-    var hex_svgElement = this.createHexSVGElement(hexTerrainType, hexPath_Pos, hex_xyzCoords, hex_XPos, hex_YPos, isHexOnBorder,"hex");
+    var hex_svgElement = this.createHexSVGElement(hexTerrainType, hex_xyzCoords, hex_XPos, hex_YPos, isHexOnBorder,"hex");
     var hexKey = hex_xyzCoords[0].toString() + hex_xyzCoords[1].toString() + hex_xyzCoords[2].toString();
     var newHex = new Hex(hex_svgElement);
     this.subscribeHexEvents(newHex.svgElement);
@@ -242,8 +242,7 @@ Board.prototype.createHexesToDrag = function(hexContainer, numberOfHexesToDraw) 
 
     for(var hexIndex = 0; hexIndex < numberOfHexesToDraw; hexIndex++) {
         terrainType = this.revealHexTerrainType();
-        hexStartingPos = "M" + hexStartingPosX + "," + hexStartingPosY;
-        newHex = this.createHexSVGElement(terrainType, hexStartingPos, [0,0,0], hexStartingPosX, hexStartingPosY, false, "hexToDrag");
+        newHex = this.createHexSVGElement(terrainType, [0,0,0], hexStartingPosX, hexStartingPosY, false, "hexToDrag");
         hexStartingPosX += hexWidth + (hexPadding / 2);
         this.subscribeHexDrag(newHex);
     }    
@@ -331,12 +330,11 @@ Board.prototype.subscribeHexDrag = function(hexSvgElement) {
         } else { //hex has not been dragged on board
             var hexStartingPosX = this.data("data_svgXPos");
             var hexStartingPosY = this.data("data_svgYPos");
-            var oldHexPathPos = "M" + hexStartingPosX + "," + hexStartingPosY;
             var oldTerrainType = this.attr("fill");
             var oldXYZCoords = [this.data("data_xPos"), this.data("data_yPos"), this.data("data_zPos")];
             var oldIsOnBorder = this.data("data_isBorderHex");
             this.remove();
-            var dragHex = boardObject.createHexSVGElement(oldTerrainType, oldHexPathPos, oldXYZCoords, hexStartingPosX, 
+            var dragHex = boardObject.createHexSVGElement(oldTerrainType, oldXYZCoords, hexStartingPosX, 
                 hexStartingPosY, oldIsOnBorder, "hexToDrag");
             dragHex.data("data_svgXPos", hexStartingPosX)
             dragHex.data("data_svgYPos", hexStartingPosY);
