@@ -11,7 +11,11 @@ function attachDOMEvents() {
            var gameBoard = new Board(boardElement, parseInt($(this).val(), 10));
            gameBoard.createBoard();
            gameBoard.determineStartingHexes();
-           gameBoard.processTurn();
+           //game loop
+           //while(!gameBoard.gameOver) {
+                gameBoard.processRound();
+           //     gameBoard.currentRound++;
+           //}
         } 
     });
 }

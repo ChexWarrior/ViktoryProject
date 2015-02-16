@@ -2,6 +2,7 @@
 function Board(boardSVGElement, numberOfPlayers) {
     //PROPERTIES
     this.boardSVGElement = boardSVGElement;
+    this.gameOver = false;
     this.currentRound = 0;
     this.currentPlayerTurn = 0;
     //will contain all hexes on board
@@ -202,12 +203,11 @@ Board.prototype.createBoard = function() {
     }
 }
 
-Board.prototype.processTurn = function() {
-    if(this.currentRound == 0) {
-        this.processFirstRound();
-    } else {
-        console.log("Not implemented yet...");
-    }
+Board.prototype.processRound = function() {
+    //for(var playerTurnIndex = 0; playerTurnIndex < this.numPlayers; playerTurnIndex++) {
+         //this.processPlayerTurn(playerTurnIndex);
+         this.processPlayerTurn(0);
+    //}
 }
 
 Board.prototype.createHexContainer = function(numberOfHexesToDraw) {
@@ -254,8 +254,13 @@ Board.prototype.displayHexChoices = function(numberOfHexesToDraw) {
 
 }
 
-Board.prototype.processFirstRound = function() {
-    this.displayHexChoices(CONSTANTS.INITIAL_HEX_DRAW);
+Board.prototype.processPlayerTurn = function(currentPlayerTurn) {
+    //initial round
+    if(this.currentRound == 0) {
+        this.displayHexChoices(CONSTANTS.INITIAL_HEX_DRAW);
+    } else {
+        //TODO: Create normal player turn flow
+    }
 }
 
 Board.prototype.subscribeHexEvents = function(hexSvgElement) {    
@@ -295,14 +300,14 @@ Board.prototype.subscribeHexDrag = function(hexSvgElement) {
         this.transform("t" + dx + "," + dy);
     };
     var startFunc = function(x, y) {
-        console.log("MOVE START");
+        //console.log("MOVE START");
         this.attr({
             class: "movingHex"
         });
         $(".hexToDrag, .hexContainer").hide();
     };
     var endFunc = function(e) {
-        console.log("MOVE END");
+        //console.log("MOVE END");
         var origHexCenterX = this.data("data_hexCenterX");
         var origHexCenterY = this.data("data_hexCenterY");
         //store the new center of the dragged hex...
@@ -315,14 +320,15 @@ Board.prototype.subscribeHexDrag = function(hexSvgElement) {
                 targetHex.data("data_zPos"));
         }
         if(targetHex != null &&
-            //and is the drag over hex an initial hex and the correct players inital hex
-            (targetHexObject.initial && targetHexObject.player == boardObject.currentPlayerTurn) &&
-            //and the hex hasn't been revealed
-            targetHexObject.hidden) {
+          //and is the drag over hex an initial hex and the correct players inital hex
+          (targetHexObject.initial && targetHexObject.player == boardObject.currentPlayerTurn) &&
+           //and the hex hasn't been revealed
+          targetHexObject.hidden) {
             targetHexObject.hidden = false;
             var targetHexX = targetHex.data("data_xPos").toString();
             var targetHexY = targetHex.data("data_yPos").toString();
             var targetHexZ = targetHex.data("data_zPos").toString();
+            //change target hex to have same terrain type as dragged hex
             boardObject.getHex(targetHexX , targetHexY, targetHexZ).svgElement.attr({
                 fill: this.attr("fill")
             });
