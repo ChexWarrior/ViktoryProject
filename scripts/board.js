@@ -380,3 +380,5 @@ Board.prototype.determineStartingHexes = function() {
         default:
     }
 }
+
+//TODO: Consolidate hex events
