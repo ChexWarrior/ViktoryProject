@@ -171,8 +171,7 @@ Board.prototype.createHex = function(hex_XPos, hex_YPos, currentRowIndex, curren
     var hexTerrainType = !isHexOnBorder ? CONSTANTS.BLANK_HEX_COLOR : CONSTANTS.WATER_HEX_COLOR;
     var hex_svgElement = this.createHexSVGElement(hexTerrainType, hex_xyzCoords, hex_XPos, hex_YPos, isHexOnBorder,"hex");
     var hexKey = hex_xyzCoords[0].toString() + hex_xyzCoords[1].toString() + hex_xyzCoords[2].toString();
-    var initialHexTuple = this.determineStartingHexes(hexKey);
-    var newHex = new Hex(hex_svgElement, initialHexTuple[0], initialHexTuple[1]);
+    var newHex = new Hex(hex_svgElement);
     newHex.subscribeHexEvents(this);
     this.hexMap[hexKey] = newHex;
 
@@ -265,21 +264,33 @@ Board.prototype.processPlayerTurn = function(currentPlayerTurn) {
 }
 
 Board.prototype.determineStartingHexes = function(coords) {
-    switch(this.numPlayers) {
+       switch(this.numPlayers) {
         case 2:
-            //first player hexes
-            if(coords == "-330" || coords == "-23-1" || coords == "-13-2" || coords == "-321" || coords == "-312") {
-                return [1, true];
-            } 
-            //second player hexes
-            else if(coords == "3-30" || coords == "3-2-1" || coords == "3-1-2" || coords == "2-31" || coords == "1-32") {
-                return [2, true]
-            }
+        this.hexMap["-330"].initial = true;
+        this.hexMap["-330"].player = 0;
+        this.hexMap["-23-1"].initial = true;
+        this.hexMap["-23-1"].player = 0;
+        this.hexMap["-13-2"].initial = true;
+        this.hexMap["-13-2"].player = 0;
+        this.hexMap["-321"].initial = true;
+        this.hexMap["-321"].player = 0;
+        this.hexMap["-312"].initial = true;
+        this.hexMap["-312"].player = 0;
+        //second player initial hexes
+        this.hexMap["3-30"].initial = true;
+        this.hexMap["3-30"].player = 1;
+        this.hexMap["3-2-1"].initial = true;
+        this.hexMap["3-2-1"].player = 1;
+        this.hexMap["3-1-2"].initial = true;
+        this.hexMap["3-1-2"].player = 1;
+        this.hexMap["2-31"].initial = true;
+        this.hexMap["2-31"].player = 1;
+        this.hexMap["1-32"].initial = true;
+        this.hexMap["1-32"].player = 1;
         break;
         //TODO: cases for other number of players
         default:
     }
-    return [null, false];
 }
 
 //TODO: Consolidate hex events

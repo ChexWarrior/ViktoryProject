@@ -1,5 +1,5 @@
 //Hex Constructor
-function Hex(svgElement, initialPlayer, isInitial) {
+function Hex(svgElement) {
     //PROPERTIES
     //ref to snap.svg element of hex
     this.svgElement = svgElement;
@@ -16,18 +16,20 @@ function Hex(svgElement, initialPlayer, isInitial) {
     //city, town or metropolis?
     this.structure = null; 
     //who controls this hex
-    this.player = initialPlayer;
+    this.player = null;
     //is a starting hex initial hex
-    this.initial = isInitial;
+    this.initial = false;
+    //is being dragged into place
+    this.draggable = false;
 }
 
 Hex.prototype.subscribeHexEvents = function(boardObject) {
     this.subscribeHexMouseover();
     this.subscribeHexMouseout();
-    //only subscribe to event if this is an initial hex
-    /*if(this.initial) {
+    //only subscribe to event if this is a draggable hex
+    if(this.draggable) {
         this.subscribeHexDrag(boardObject);
-    }*/
+    }
 }
 
 Hex.prototype.subscribeHexMouseover = function() {
@@ -104,7 +106,7 @@ Hex.prototype.subscribeHexDrag = function(boardObject) {
                 hexStartingPosY, oldIsOnBorder, "hexToDrag");
             dragHex.data("data_svgXPos", hexStartingPosX)
             dragHex.data("data_svgYPos", hexStartingPosY);
-           // boardObject.subscribeHexDrag(dragHex);
+            dragHex.subscribeHexDrag(boardObject);
         }
         $(".hexToDrag, .hexContainer").show();
     };
