@@ -49,7 +49,7 @@ Hex.prototype.subscribeHexMouseout = function() {
 }
 
 Hex.prototype.subscribeHexDrag = function(boardObject) {
-       var moveFunc = function(dx, dy, posx, posy) {
+    var moveFunc = function(dx, dy, posx, posy) {
         //get the last position this element was dragged to (origX, origY)
         var origX = this.data("origX") == null ? 0 : this.data("origX");
         var origY = this.data("origY") == null ? 0 : this.data("origY");

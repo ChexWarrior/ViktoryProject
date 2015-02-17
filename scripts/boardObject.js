@@ -174,7 +174,6 @@ Board.prototype.createHex = function(hex_XPos, hex_YPos, currentRowIndex, curren
     var newHex = new Hex(hex_svgElement, false);
     newHex.subscribeHexEvents(this);
     this.hexMap[hexKey] = newHex;
-
 }
 
 Board.prototype.createHexRow = function(currentRowLength, currentRowIndex, currentXPos, currentYPos) {
@@ -294,5 +293,3 @@ Board.prototype.determineStartingHexes = function(coords) {
         default:
     }
 }
-
-//TODO: Consolidate hex events
