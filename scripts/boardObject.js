@@ -4,7 +4,7 @@ function Board(boardSVGElement, numberOfPlayers) {
     this.boardSVGElement = boardSVGElement;
     this.gameOver = false;
     this.currentRound = 0;
-    this.currentPlayerTurn = 1;
+    this.currentPlayerTurn = 0;
     //will contain all hexes on board
     this.hexMap = {};
     this.numPlayers = numberOfPlayers;
