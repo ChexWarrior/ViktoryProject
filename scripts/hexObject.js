@@ -1,5 +1,5 @@
 //Hex Constructor
-function Hex(svgElement) {
+function Hex(svgElement, isDraggable) {
     //PROPERTIES
     //ref to snap.svg element of hex
     this.svgElement = svgElement;
@@ -20,7 +20,7 @@ function Hex(svgElement) {
     //is a starting hex initial hex
     this.initial = false;
     //is being dragged into place
-    this.draggable = false;
+    this.draggable = isDraggable;
 }
 
 Hex.prototype.subscribeHexEvents = function(boardObject) {
@@ -106,7 +106,8 @@ Hex.prototype.subscribeHexDrag = function(boardObject) {
                 hexStartingPosY, oldIsOnBorder, "hexToDrag");
             dragHex.data("data_svgXPos", hexStartingPosX)
             dragHex.data("data_svgYPos", hexStartingPosY);
-            dragHex.subscribeHexDrag(boardObject);
+            var newHexObject = new Hex(dragHex, true);
+            newHexObject.subscribeHexEvents(boardObject);
         }
         $(".hexToDrag, .hexContainer").show();
     };

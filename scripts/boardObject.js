@@ -171,7 +171,7 @@ Board.prototype.createHex = function(hex_XPos, hex_YPos, currentRowIndex, curren
     var hexTerrainType = !isHexOnBorder ? CONSTANTS.BLANK_HEX_COLOR : CONSTANTS.WATER_HEX_COLOR;
     var hex_svgElement = this.createHexSVGElement(hexTerrainType, hex_xyzCoords, hex_XPos, hex_YPos, isHexOnBorder,"hex");
     var hexKey = hex_xyzCoords[0].toString() + hex_xyzCoords[1].toString() + hex_xyzCoords[2].toString();
-    var newHex = new Hex(hex_svgElement);
+    var newHex = new Hex(hex_svgElement, false);
     newHex.subscribeHexEvents(this);
     this.hexMap[hexKey] = newHex;
 
@@ -238,13 +238,15 @@ Board.prototype.createHexesToDrag = function(hexContainer, numberOfHexesToDraw) 
     var hexStartingPosY = hexContainer.getBBox().y + 3;
     var terrainType = "";
     var hexStartingPos = "";
-    var newHex = null;
+    var newSvgHex = null;
+    var newHexObject = null;
 
     for(var hexIndex = 0; hexIndex < numberOfHexesToDraw; hexIndex++) {
         terrainType = this.revealHexTerrainType();
-        newHex = this.createHexSVGElement(terrainType, [0,0,0], hexStartingPosX, hexStartingPosY, false, "hexToDrag");
+        newSvgHex = this.createHexSVGElement(terrainType, [0,0,0], hexStartingPosX, hexStartingPosY, false, "hexToDrag");
+        newHexObject = new Hex(newSvgHex, true);
+        newHexObject.subscribeHexEvents(this);
         hexStartingPosX += hexWidth + (hexPadding / 2);
-        this.subscribeHexDrag(newHex);
     }    
 }
 

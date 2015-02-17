@@ -13,7 +13,7 @@ function attachDOMEvents() {
            gameBoard.determineStartingHexes();
            //game loop
            //while(!gameBoard.gameOver) {
-              //  gameBoard.processRound();
+                gameBoard.processRound();
            //     gameBoard.currentRound++;
            //}
         } 
