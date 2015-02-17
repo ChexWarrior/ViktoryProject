@@ -4,7 +4,7 @@ function Board(boardSVGElement, numberOfPlayers) {
     this.boardSVGElement = boardSVGElement;
     this.gameOver = false;
     this.currentRound = 0;
-    this.currentPlayerTurn = 0;
+    this.currentPlayerTurn = 1;
     //will contain all hexes on board
     this.hexMap = {};
     this.numPlayers = numberOfPlayers;
@@ -203,10 +203,7 @@ Board.prototype.createBoard = function() {
 }
 
 Board.prototype.processRound = function() {
-    //for(var playerTurnIndex = 0; playerTurnIndex < this.numPlayers; playerTurnIndex++) {
-         //this.processPlayerTurn(playerTurnIndex);
-         this.processPlayerTurn(0);
-    //}
+    this.processPlayerTurn();
 }
 
 Board.prototype.createHexContainer = function(numberOfHexesToDraw) {
@@ -258,36 +255,31 @@ Board.prototype.displayHexChoices = function(numberOfHexesToDraw) {
 Board.prototype.processPlayerTurn = function(currentPlayerTurn) {
     //initial round
     if(this.currentRound == 0) {
+        this.determineStartingHexes(this.currentPlayerTurn)
         this.displayHexChoices(CONSTANTS.INITIAL_HEX_DRAW);
     } else {
         //TODO: Create normal player turn flow
     }
 }
 
-Board.prototype.determineStartingHexes = function(coords) {
+Board.prototype.determineStartingHexes = function(currentPlayerTurn) {
        switch(this.numPlayers) {
         case 2:
-        this.hexMap["-330"].isDragTarget = true;
-        this.hexMap["-330"].player = 0;
-        this.hexMap["-23-1"].isDragTarget = true;
-        this.hexMap["-23-1"].player = 0;
-        this.hexMap["-13-2"].isDragTarget = true;
-        this.hexMap["-13-2"].player = 0;
-        this.hexMap["-321"].isDragTarget = true;
-        this.hexMap["-321"].player = 0;
-        this.hexMap["-312"].isDragTarget = true;
-        this.hexMap["-312"].player = 0;
-        //second player initial hexes
-        this.hexMap["3-30"].isDragTarget = true;
-        this.hexMap["3-30"].player = 1;
-        this.hexMap["3-2-1"].isDragTarget = true;
-        this.hexMap["3-2-1"].player = 1;
-        this.hexMap["3-1-2"].isDragTarget = true;
-        this.hexMap["3-1-2"].player = 1;
-        this.hexMap["2-31"].isDragTarget = true;
-        this.hexMap["2-31"].player = 1;
-        this.hexMap["1-32"].isDragTarget = true;
-        this.hexMap["1-32"].player = 1;
+            if(currentPlayerTurn == 0) {
+                //first player initial hexes
+                this.hexMap["-330"].isDragTarget = true;
+                this.hexMap["-23-1"].isDragTarget = true;
+                this.hexMap["-13-2"].isDragTarget = true;
+                this.hexMap["-321"].isDragTarget = true;
+                this.hexMap["-312"].isDragTarget = true;
+            } else {
+                //second player initial hexes
+                this.hexMap["3-30"].isDragTarget = true;
+                this.hexMap["3-2-1"].isDragTarget = true;
+                this.hexMap["3-1-2"].isDragTarget = true;
+                this.hexMap["2-31"].isDragTarget = true;
+                this.hexMap["1-32"].isDragTarget = true;
+            }
         break;
         //TODO: cases for other number of players
         default:
