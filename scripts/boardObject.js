@@ -267,26 +267,26 @@ Board.prototype.processPlayerTurn = function(currentPlayerTurn) {
 Board.prototype.determineStartingHexes = function(coords) {
        switch(this.numPlayers) {
         case 2:
-        this.hexMap["-330"].initial = true;
+        this.hexMap["-330"].isDragTarget = true;
         this.hexMap["-330"].player = 0;
-        this.hexMap["-23-1"].initial = true;
+        this.hexMap["-23-1"].isDragTarget = true;
         this.hexMap["-23-1"].player = 0;
-        this.hexMap["-13-2"].initial = true;
+        this.hexMap["-13-2"].isDragTarget = true;
         this.hexMap["-13-2"].player = 0;
-        this.hexMap["-321"].initial = true;
+        this.hexMap["-321"].isDragTarget = true;
         this.hexMap["-321"].player = 0;
-        this.hexMap["-312"].initial = true;
+        this.hexMap["-312"].isDragTarget = true;
         this.hexMap["-312"].player = 0;
         //second player initial hexes
-        this.hexMap["3-30"].initial = true;
+        this.hexMap["3-30"].isDragTarget = true;
         this.hexMap["3-30"].player = 1;
-        this.hexMap["3-2-1"].initial = true;
+        this.hexMap["3-2-1"].isDragTarget = true;
         this.hexMap["3-2-1"].player = 1;
-        this.hexMap["3-1-2"].initial = true;
+        this.hexMap["3-1-2"].isDragTarget = true;
         this.hexMap["3-1-2"].player = 1;
-        this.hexMap["2-31"].initial = true;
+        this.hexMap["2-31"].isDragTarget = true;
         this.hexMap["2-31"].player = 1;
-        this.hexMap["1-32"].initial = true;
+        this.hexMap["1-32"].isDragTarget = true;
         this.hexMap["1-32"].player = 1;
         break;
         //TODO: cases for other number of players

@@ -3,3 +3,4 @@ Next Steps:
     - Change condition in drag end method to check for this
     - Add new prop to hex that indicates if it can be dragged on at this moment
     - Ensure this prop is switched off when drag is over
+    - Rework initial hex reveal by player turn
