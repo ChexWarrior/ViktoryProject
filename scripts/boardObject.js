@@ -171,8 +171,9 @@ Board.prototype.createHex = function(hex_XPos, hex_YPos, currentRowIndex, curren
     var hexTerrainType = !isHexOnBorder ? CONSTANTS.BLANK_HEX_COLOR : CONSTANTS.WATER_HEX_COLOR;
     var hex_svgElement = this.createHexSVGElement(hexTerrainType, hex_xyzCoords, hex_XPos, hex_YPos, isHexOnBorder,"hex");
     var hexKey = hex_xyzCoords[0].toString() + hex_xyzCoords[1].toString() + hex_xyzCoords[2].toString();
-    var newHex = new Hex(hex_svgElement);
-    this.subscribeHexEvents(newHex.svgElement);
+    var initialHexTuple = this.determineStartingHexes(hexKey);
+    var newHex = new Hex(hex_svgElement, initialHexTuple[0], initialHexTuple[1]);
+    newHex.subscribeHexEvents(this);
     this.hexMap[hexKey] = newHex;
 
 }
@@ -263,122 +264,22 @@ Board.prototype.processPlayerTurn = function(currentPlayerTurn) {
     }
 }
 
-Board.prototype.subscribeHexEvents = function(hexSvgElement) {    
-   this.subscribeHexMouseover(hexSvgElement);
-   this.subscribeHexMouseout(hexSvgElement);
-   //this.subscribeHexDrag(hexSvgElement);
-}
-
-Board.prototype.subscribeHexMouseover = function(hexSvgElement) {
-    hexSvgElement.mouseover(function() {
-        this.attr({
-            stroke: CONSTANTS.MOUSE_OVER_STROKE_COLOR
-        });
-    });
-}
-
-Board.prototype.subscribeHexMouseout = function(hexSvgElement) {
-     hexSvgElement.mouseout(function() {
-        this.attr({
-            stroke: CONSTANTS.DEFAULT_STROKE_COLOR
-        });
-    });
-}
-
-Board.prototype.subscribeHexDrag = function(hexSvgElement) {
-    var boardObject = this;
-    var moveFunc = function(dx, dy, posx, posy) {
-        //get the last position this element was dragged to (origX, origY)
-        var origX = this.data("origX") == null ? 0 : this.data("origX");
-        var origY = this.data("origY") == null ? 0 : this.data("origY");
-        dx = dx + origX;
-        dy = dy + origY;
-        //store the position were moving it to now (lastX, lastY)
-        this.data("lastX", dx);
-        this.data("lastY", dy);
-        //actually move the hex...
-        this.transform("t" + dx + "," + dy);
-    };
-    var startFunc = function(x, y) {
-        //console.log("MOVE START");
-        this.attr({
-            class: "movingHex"
-        });
-        $(".hexToDrag, .hexContainer").hide();
-    };
-    var endFunc = function(e) {
-        //console.log("MOVE END");
-        var origHexCenterX = this.data("data_hexCenterX");
-        var origHexCenterY = this.data("data_hexCenterY");
-        //store the new center of the dragged hex...
-        var newHexCenterX = this.getBBox().cx;
-        var newHexCenterY = this.getBBox().cy;
-        //find which hex we dragged this hex over...
-        var targetHex = boardObject.getDragoverHex(newHexCenterX, newHexCenterY);
-        if(targetHex != null) {
-            var targetHexObject = boardObject.getHex(targetHex.data("data_xPos"), targetHex.data("data_yPos"), 
-                targetHex.data("data_zPos"));
-        }
-        if(targetHex != null &&
-          //and is the drag over hex an initial hex and the correct players inital hex
-          (targetHexObject.initial && targetHexObject.player == boardObject.currentPlayerTurn) &&
-           //and the hex hasn't been revealed
-          targetHexObject.hidden) {
-            targetHexObject.hidden = false;
-            var targetHexX = targetHex.data("data_xPos").toString();
-            var targetHexY = targetHex.data("data_yPos").toString();
-            var targetHexZ = targetHex.data("data_zPos").toString();
-            //change target hex to have same terrain type as dragged hex
-            boardObject.getHex(targetHexX , targetHexY, targetHexZ).svgElement.attr({
-                fill: this.attr("fill")
-            });
-            this.remove();
-        } else { //hex has not been dragged on board
-            var hexStartingPosX = this.data("data_svgXPos");
-            var hexStartingPosY = this.data("data_svgYPos");
-            var oldTerrainType = this.attr("fill");
-            var oldXYZCoords = [this.data("data_xPos"), this.data("data_yPos"), this.data("data_zPos")];
-            var oldIsOnBorder = this.data("data_isBorderHex");
-            this.remove();
-            var dragHex = boardObject.createHexSVGElement(oldTerrainType, oldXYZCoords, hexStartingPosX, 
-                hexStartingPosY, oldIsOnBorder, "hexToDrag");
-            dragHex.data("data_svgXPos", hexStartingPosX)
-            dragHex.data("data_svgYPos", hexStartingPosY);
-            boardObject.subscribeHexDrag(dragHex);
-        }
-        $(".hexToDrag, .hexContainer").show();
-    };
-    hexSvgElement.drag(moveFunc, startFunc, endFunc);
-}
-
-Board.prototype.determineStartingHexes = function() {
+Board.prototype.determineStartingHexes = function(coords) {
     switch(this.numPlayers) {
         case 2:
-            this.hexMap["-330"].initial = true;
-            this.hexMap["-330"].player = 0;
-            this.hexMap["-23-1"].initial = true;
-            this.hexMap["-23-1"].player = 0;
-            this.hexMap["-13-2"].initial = true;
-            this.hexMap["-13-2"].player = 0;
-            this.hexMap["-321"].initial = true;
-            this.hexMap["-321"].player = 0;
-            this.hexMap["-312"].initial = true;
-            this.hexMap["-312"].player = 0;
-            //second player initial hexes
-            this.hexMap["3-30"].initial = true;
-            this.hexMap["3-30"].player = 1;
-            this.hexMap["3-2-1"].initial = true;
-            this.hexMap["3-2-1"].player = 1;
-            this.hexMap["3-1-2"].initial = true;
-            this.hexMap["3-1-2"].player = 1;
-            this.hexMap["2-31"].initial = true;
-            this.hexMap["2-31"].player = 1;
-            this.hexMap["1-32"].initial = true;
-            this.hexMap["1-32"].player = 1;
+            //first player hexes
+            if(coords == "-330" || coords == "-23-1" || coords == "-13-2" || coords == "-321" || coords == "-312") {
+                return [1, true];
+            } 
+            //second player hexes
+            else if(coords == "3-30" || coords == "3-2-1" || coords == "3-1-2" || coords == "2-31" || coords == "1-32") {
+                return [2, true]
+            }
         break;
         //TODO: cases for other number of players
         default:
     }
+    return [null, false];
 }
 
 //TODO: Consolidate hex events
