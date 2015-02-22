@@ -57,7 +57,10 @@ function Board(boardSVGElement, numberOfPlayers) {
     this.currentAmtMountainHexes = CONSTANTS.MAX_MOUNTAIN_HEXES;
 }
 
-//TODO: Improve performance
+Board.prototype.changeTurn = function() {
+    //TODO: create method
+}
+
 Board.prototype.getDragoverHex = function(xPos, yPos) {
     for(var hex in this.hexMap) {
          if(Snap.path.isPointInside(this.hexMap[hex].svgElement, xPos, yPos)) {
