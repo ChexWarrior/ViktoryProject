@@ -1,5 +1,5 @@
 //Hex Constructor
-function Hex(svgElement, isDraggable) {
+function Hex(svgElement, isDraggable, player) {
     //PROPERTIES
     //ref to snap.svg element of hex
     this.svgElement = svgElement;
@@ -16,7 +16,7 @@ function Hex(svgElement, isDraggable) {
     //city, town or metropolis?
     this.structure = null; 
     //who controls this hex
-    this.player = null;
+    this.player = player;
     //is a starting hex initial hex
     //this.initial = false;
     //is being dragged into place
@@ -85,7 +85,7 @@ Hex.prototype.subscribeHexDrag = function(boardObject) {
                 targetHex.data("data_zPos"));
         }
         //you dragged over a hex and it can be dragged onto
-        if(targetHexObject != null && targetHexObject.isDragTarget) {
+        if(targetHexObject != null && targetHexObject.isDragTarget && targetHexObject.player == boardObject.currentPlayerTurn) {
             targetHexObject.hidden = false;
             var targetHexX = targetHex.data("data_xPos").toString();
             var targetHexY = targetHex.data("data_yPos").toString();

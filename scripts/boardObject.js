@@ -4,7 +4,7 @@ function Board(boardSVGElement, numberOfPlayers) {
     this.boardSVGElement = boardSVGElement;
     this.gameOver = false;
     this.currentRound = 0;
-    this.currentPlayerTurn = 0;
+    this.currentPlayerTurn = 1;
     //will contain all hexes on board
     this.hexMap = {};
     this.numPlayers = numberOfPlayers;
@@ -59,6 +59,13 @@ function Board(boardSVGElement, numberOfPlayers) {
 
 Board.prototype.changeTurn = function() {
     //TODO: create method
+    if(this.currentPlayerTurn == this.numPlayers) {
+        this.currentPlayerTurn = 0;
+        this.currentRound++;
+    } else {
+        this.currentPlayerTurn++;
+    }
+    $("#playerTurnIndicator").html("Player Turn: " + this.currentPlayerTurn);
 }
 
 Board.prototype.getDragoverHex = function(xPos, yPos) {
@@ -174,7 +181,7 @@ Board.prototype.createHex = function(hex_XPos, hex_YPos, currentRowIndex, curren
     var hexTerrainType = !isHexOnBorder ? CONSTANTS.BLANK_HEX_COLOR : CONSTANTS.WATER_HEX_COLOR;
     var hex_svgElement = this.createHexSVGElement(hexTerrainType, hex_xyzCoords, hex_XPos, hex_YPos, isHexOnBorder,"hex");
     var hexKey = hex_xyzCoords[0].toString() + hex_xyzCoords[1].toString() + hex_xyzCoords[2].toString();
-    var newHex = new Hex(hex_svgElement, false);
+    var newHex = new Hex(hex_svgElement, false, null);
     newHex.subscribeHexEvents(this);
     this.hexMap[hexKey] = newHex;
 }
@@ -203,10 +210,6 @@ Board.prototype.createBoard = function() {
         }
         currentY_Pos += CONSTANTS.HEX_HEIGHT;
     }
-}
-
-Board.prototype.processRound = function() {
-    this.processPlayerTurn();
 }
 
 Board.prototype.createHexContainer = function(numberOfHexesToDraw) {
@@ -243,7 +246,7 @@ Board.prototype.createHexesToDrag = function(hexContainer, numberOfHexesToDraw) 
     for(var hexIndex = 0; hexIndex < numberOfHexesToDraw; hexIndex++) {
         terrainType = this.revealHexTerrainType();
         newSvgHex = this.createHexSVGElement(terrainType, [0,0,0], hexStartingPosX, hexStartingPosY, false, "hexToDrag");
-        newHexObject = new Hex(newSvgHex, true);
+        newHexObject = new Hex(newSvgHex, true, null);
         newHexObject.subscribeHexEvents(this);
         hexStartingPosX += hexWidth + (hexPadding / 2);
     }    
@@ -268,20 +271,30 @@ Board.prototype.processPlayerTurn = function(currentPlayerTurn) {
 Board.prototype.determineStartingHexes = function(currentPlayerTurn) {
        switch(this.numPlayers) {
         case 2:
-            if(currentPlayerTurn == 0) {
+            if(currentPlayerTurn == 1) {
                 //first player initial hexes
                 this.hexMap["-330"].isDragTarget = true;
+                this.hexMap["-330"].player = 1;
                 this.hexMap["-23-1"].isDragTarget = true;
+                this.hexMap["-23-1"].player = 1;
                 this.hexMap["-13-2"].isDragTarget = true;
+                this.hexMap["-13-2"].player = 1;
                 this.hexMap["-321"].isDragTarget = true;
+                this.hexMap["-321"].player = 1;
                 this.hexMap["-312"].isDragTarget = true;
+                this.hexMap["-312"].player = 1;
             } else {
                 //second player initial hexes
                 this.hexMap["3-30"].isDragTarget = true;
+                this.hexMap["3-30"].player = 2;
                 this.hexMap["3-2-1"].isDragTarget = true;
+                this.hexMap["3-2-1"].player = 2;
                 this.hexMap["3-1-2"].isDragTarget = true;
+                this.hexMap["3-1-2"].player = 2;
                 this.hexMap["2-31"].isDragTarget = true;
+                this.hexMap["2-31"].player = 2;
                 this.hexMap["1-32"].isDragTarget = true;
+                this.hexMap["1-32"].player = 2;
             }
         break;
         //TODO: cases for other number of players

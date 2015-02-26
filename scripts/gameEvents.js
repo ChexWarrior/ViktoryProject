@@ -11,13 +11,12 @@ function attachDOMEvents() {
            $(".hex").remove();
            var gameBoard = new Board(boardElement, parseInt($(this).val(), 10));
            $("#playerTurnIndicator").html("Player Turn: 1");
-           gameBoard.createBoard();
-           $("#playerTurnIndicator").on("click", function() {
-              gameBoard.changeTurn();
+           $("#endTurnBtn").on("click", function() {
+                gameBoard.changeTurn();
            });
+           gameBoard.createBoard();
            gameBoard.determineStartingHexes();
-           gameBoard.processRound();
+           gameBoard.processPlayerTurn();
         }
-
     });
 }
