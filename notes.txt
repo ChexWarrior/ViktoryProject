@@ -4,3 +4,5 @@ Next Steps:
     - Add new prop to hex that indicates if it can be dragged on at this moment
     - Ensure this prop is switched off when drag is over
     - Rework initial hex reveal by player turn
+
+* Encapsulate hex svg creation within hex object

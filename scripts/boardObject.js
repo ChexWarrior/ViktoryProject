@@ -152,18 +152,18 @@ Board.prototype.getHexCoordinates = function(hexRowIndex, hexIndex, rowLength) {
 Board.prototype.createHexSVGElement = function(terrainType, xyzCoords, xPosition, yPosition, isOnBorder, cssClass) {
     var hexPathPos = "M" + xPosition.toString() + "," + yPosition.toString();
     var svgHex = this.boardSVGElement.path(hexPathPos + CONSTANTS.HEX_PATH)
-    .attr({
-        fill: terrainType,
-        stroke: CONSTANTS.DEFAULT_STROKE_COLOR,
-        strokeWidth: CONSTANTS.DEFAULT_STROKE_WIDTH,
-        class: cssClass
-    })
-    .data("data_svgXPos", xPosition)
-    .data("data_svgYPos", yPosition)
-    .data("data_isBorderHex", isOnBorder)
-    .data("data_xPos", xyzCoords[0])
-    .data("data_yPos", xyzCoords[1])
-    .data("data_zPos", xyzCoords[2]);
+        .attr({
+            fill: terrainType,
+            stroke: CONSTANTS.DEFAULT_STROKE_COLOR,
+            strokeWidth: CONSTANTS.DEFAULT_STROKE_WIDTH,
+            class: cssClass
+        })
+        .data("data_svgXPos", xPosition)
+        .data("data_svgYPos", yPosition)
+        .data("data_isBorderHex", isOnBorder)
+        .data("data_xPos", xyzCoords[0])
+        .data("data_yPos", xyzCoords[1])
+        .data("data_zPos", xyzCoords[2]);
 
     svgHex.data("data_hexCenterX", svgHex.getBBox().cx)
         .data("data_hexCenterY", svgHex.getBBox().cy);
@@ -179,9 +179,10 @@ Board.prototype.createHex = function(hex_XPos, hex_YPos, currentRowIndex, curren
     //hook for random generation of hexes
     //var hexTerrainType = !isHexOnBorder ? this.revealHexTerrainType() : this.WATER_HEX_COLOR;
     var hexTerrainType = !isHexOnBorder ? CONSTANTS.BLANK_HEX_COLOR : CONSTANTS.WATER_HEX_COLOR;
-    var hex_svgElement = this.createHexSVGElement(hexTerrainType, hex_xyzCoords, hex_XPos, hex_YPos, isHexOnBorder,"hex");
+    //var hex_svgElement = this.createHexSVGElement(hexTerrainType, hex_xyzCoords, hex_XPos, hex_YPos, isHexOnBorder,"hex");
     var hexKey = hex_xyzCoords[0].toString() + hex_xyzCoords[1].toString() + hex_xyzCoords[2].toString();
-    var newHex = new Hex(hex_svgElement, false, null);
+    var newHex = new Hex(CONSTANTS.BLANK_HEX_COLOR, false, null);
+    newHex.createSvgElement(this, hexTerrainType, hex_xyzCoords, hex_XPos, hex_YPos, isHexOnBorder, "hex");
     newHex.subscribeHexEvents(this);
     this.hexMap[hexKey] = newHex;
 }
@@ -245,8 +246,9 @@ Board.prototype.createHexesToDrag = function(hexContainer, numberOfHexesToDraw) 
 
     for(var hexIndex = 0; hexIndex < numberOfHexesToDraw; hexIndex++) {
         terrainType = this.revealHexTerrainType();
-        newSvgHex = this.createHexSVGElement(terrainType, [0,0,0], hexStartingPosX, hexStartingPosY, false, "hexToDrag");
-        newHexObject = new Hex(newSvgHex, true, null);
+        //newSvgHex = this.createHexSVGElement(terrainType, [0,0,0], hexStartingPosX, hexStartingPosY, false, "hexToDrag");
+        newHexObject = new Hex(terrainType, true, null);
+        newHexObject.createSvgElement(this, terrainType, [0,0,0], hexStartingPosX, hexStartingPosY, false, "hexToDrag");
         newHexObject.subscribeHexEvents(this);
         hexStartingPosX += hexWidth + (hexPadding / 2);
     }    
