@@ -27,7 +27,7 @@ function Hex(terrainType, isDraggable, player) {
 
 Hex.prototype.createSvgElement = function(boardObject, terrainType, xyzCoords, xPosition, yPosition, isOnBorder, cssClass) {
     var hexPathPos = "M" + xPosition.toString() + "," + yPosition.toString();
-    var svgHex = boardObject.boardSVGElement.path(hexPathPos + CONSTANTS.HEX_PATH)
+    var svgHex = boardObject.svgElement.path(hexPathPos + CONSTANTS.HEX_PATH)
         .attr({
             fill: terrainType,
             stroke: CONSTANTS.DEFAULT_STROKE_COLOR,
@@ -71,6 +71,10 @@ Hex.prototype.subscribeHexMouseout = function() {
              stroke: CONSTANTS.DEFAULT_STROKE_COLOR
         });
     });
+}
+
+Hex.prototype.setTerrainType = function(terrainType) {
+
 }
 
 Hex.prototype.subscribeHexDrag = function(boardObject) {

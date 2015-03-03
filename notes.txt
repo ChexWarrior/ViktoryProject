@@ -5,4 +5,8 @@ Next Steps:
     - Ensure this prop is switched off when drag is over
     - Rework initial hex reveal by player turn
 
-* Encapsulate hex svg creation within hex object
+* Clean up hex svg creation method
+
+* Rename svgElement to svgelement
+
+* Don't allow access to an objects svg element anywhere except in its own methods

@@ -1,7 +1,7 @@
 //Game Board Constructor
-function Board(boardSVGElement, numberOfPlayers) {
+function Board(svgElement, numberOfPlayers) {
     //PROPERTIES
-    this.boardSVGElement = boardSVGElement;
+    this.svgElement = svgElement;
     this.gameOver = false;
     this.currentRound = 0;
     this.currentPlayerTurn = 1;
@@ -121,12 +121,12 @@ Board.prototype.revealHexTerrainType = function() {
     }    
     //reduce total amount of all hexes by one
     this.totalPossibleHexes--;
-    console.log("Random Roll: " + randomRoll + "\nTotal Amt of Hexes: " + this.totalPossibleHexes + 
+    /*console.log("Random Roll: " + randomRoll + "\nTotal Amt of Hexes: " + this.totalPossibleHexes + 
     "\nChance/Range of Mountain: " + chanceOfMountain + "/" + mountainRange +
     "\nChance/Range of Forest: " + chanceOfForest + "/" + forestRange + 
     "\nChance/Range of Grassland: " + chanceOfGrass + "/" + grassRange +
     "\nChance/Range of Plain: " + chanceOfPlain + "/" + plainRange +
-    "\nChance/Range of Water: " + chanceOfWater + "/" + waterRange);
+    "\nChance/Range of Water: " + chanceOfWater + "/" + waterRange);*/
     return terrainType;
 }
 
@@ -151,7 +151,7 @@ Board.prototype.getHexCoordinates = function(hexRowIndex, hexIndex, rowLength) {
 
 Board.prototype.createHexSVGElement = function(terrainType, xyzCoords, xPosition, yPosition, isOnBorder, cssClass) {
     var hexPathPos = "M" + xPosition.toString() + "," + yPosition.toString();
-    var svgHex = this.boardSVGElement.path(hexPathPos + CONSTANTS.HEX_PATH)
+    var svgHex = this.svgElement.path(hexPathPos + CONSTANTS.HEX_PATH)
         .attr({
             fill: terrainType,
             stroke: CONSTANTS.DEFAULT_STROKE_COLOR,
@@ -216,13 +216,13 @@ Board.prototype.createBoard = function() {
 Board.prototype.createHexContainer = function(numberOfHexesToDraw) {
     var hexWidth = CONSTANTS.HEX_WIDTH;
     var hexHeight = CONSTANTS.HEX_HEIGHT;
-    var centerXPosOfBoard = this.boardSVGElement.getBBox().cx;
+    var centerXPosOfBoard = this.svgElement.getBBox().cx;
     var hexContainerPadding = 10;
     var hexContainerWidth = (hexWidth * numberOfHexesToDraw) + (hexContainerPadding * numberOfHexesToDraw);
     var hexContainerTopLeftX = Math.abs(centerXPosOfBoard - hexContainerWidth / 2);
     var hexContainerHeight = hexHeight + (hexContainerPadding * 2.5);
-    var hexContainerTopLeftY = this.boardSVGElement.getBBox().cy - hexHeight;
-    var hexContainer = this.boardSVGElement.rect(hexContainerTopLeftX, hexContainerTopLeftY, hexContainerWidth,
+    var hexContainerTopLeftY = this.svgElement.getBBox().cy - hexHeight;
+    var hexContainer = this.svgElement.rect(hexContainerTopLeftX, hexContainerTopLeftY, hexContainerWidth,
         hexContainerHeight, 10).attr({
             fill: CONSTANTS.BLANK_HEX_COLOR,
             stroke: CONSTANTS.DEFAULT_STROKE_COLOR,
