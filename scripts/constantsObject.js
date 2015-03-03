@@ -15,14 +15,28 @@ var CONSTANTS = {
     MOUSE_OVER_STROKE_COLOR: "red",
     DEFAULT_STROKE_COLOR: "black",
     DEFAULT_STROKE_WIDTH: 3,
-    BLANK_HEX_COLOR: "white",
-    WATER_HEX_COLOR: "blue",
-    GRASS_HEX_COLOR: "greenyellow",
-    FOREST_HEX_COLOR: "green",
-    MOUNTAIN_HEX_COLOR: "gray",
-    PLAIN_HEX_COLOR: "yellow",
     //game constants
-    INITIAL_HEX_DRAW: 5
+    INITIAL_HEX_DRAW: 5,
+    //hex terrain types
+    BLANK_TYPE: {
+        COLOR:"white"
+    },
+    MOUNTAIN_TYPE: {
+        COLOR : "gray"
+    },
+    WATER_TYPE: {
+        COLOR: "blue"
+    },
+    GRASS_TYPE: {
+        COLOR: "greenyellow"
+    },
+    FOREST_TYPE: {
+        COLOR: "green"
+    },
+    PLAIN_TYPE: {
+        COLOR: "yellow"
+    }
+
 };
 
 Object.freeze(CONSTANTS);

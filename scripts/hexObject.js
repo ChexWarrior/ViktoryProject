@@ -74,7 +74,7 @@ Hex.prototype.subscribeHexMouseout = function() {
 }
 
 Hex.prototype.setTerrainType = function(terrainType) {
-
+    
 }
 
 Hex.prototype.subscribeHexDrag = function(boardObject) {

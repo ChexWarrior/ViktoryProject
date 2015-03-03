@@ -83,7 +83,7 @@ Board.prototype.getHex = function(xPos, yPos, zPos) {
 
 Board.prototype.revealHexTerrainType = function() {
     //1d100
-    var terrainType = CONSTANTS.BLANK_HEX_COLOR;
+    var terrainType = CONSTANTS.BLANK_TYPE.COLOR;
     var randomRoll = Math.floor(Math.random() * 100 + 1);
     //calculate percent chance of particular hex being chosen
     var chanceOfMountain = Math.floor((this.currentAmtMountainHexes / this.totalPossibleHexes) * 100);
@@ -103,19 +103,19 @@ Board.prototype.revealHexTerrainType = function() {
     //when a particular hex is chosen reduce that hex total by one
     if(mountainRange) {
         this.currentAmtMountainHexes--;
-        terrainType = CONSTANTS.MOUNTAIN_HEX_COLOR;
+        terrainType = CONSTANTS.MOUNTAIN_TYPE.COLOR;
     } else if(plainRange) {
         this.currentAmtPlainHexes--;
         terrainType = CONSTANTS.PLAIN_HEX_COLOR;
     } else if(forestRange) {
         this.currentAmtForestHexes--;
-        terrainType = CONSTANTS.FOREST_HEX_COLOR;
+        terrainType = CONSTANTS.FOREST_TYPE.COLOR;
     } else if(grassRange) {
         this.currentAmtGrassHexes--;
-        terrainType = CONSTANTS.GRASS_HEX_COLOR;
+        terrainType = CONSTANTS.GRASS_TYPE.COLOR;
     } else if(waterRange) {
         this.currentAmtWaterHexes--;
-        terrainType = CONSTANTS.WATER_HEX_COLOR;
+        terrainType = CONSTANTS.WATER_TYPE.COLOR;
     } else {
         console.log("ERROR: revealHexTerrainType");
     }    
@@ -149,39 +149,16 @@ Board.prototype.getHexCoordinates = function(hexRowIndex, hexIndex, rowLength) {
     return [currentXPos, currentYPos, currentZPos];
 }
 
-Board.prototype.createHexSVGElement = function(terrainType, xyzCoords, xPosition, yPosition, isOnBorder, cssClass) {
-    var hexPathPos = "M" + xPosition.toString() + "," + yPosition.toString();
-    var svgHex = this.svgElement.path(hexPathPos + CONSTANTS.HEX_PATH)
-        .attr({
-            fill: terrainType,
-            stroke: CONSTANTS.DEFAULT_STROKE_COLOR,
-            strokeWidth: CONSTANTS.DEFAULT_STROKE_WIDTH,
-            class: cssClass
-        })
-        .data("data_svgXPos", xPosition)
-        .data("data_svgYPos", yPosition)
-        .data("data_isBorderHex", isOnBorder)
-        .data("data_xPos", xyzCoords[0])
-        .data("data_yPos", xyzCoords[1])
-        .data("data_zPos", xyzCoords[2]);
-
-    svgHex.data("data_hexCenterX", svgHex.getBBox().cx)
-        .data("data_hexCenterY", svgHex.getBBox().cy);
-
-    return svgHex;
-}
-
 Board.prototype.createHex = function(hex_XPos, hex_YPos, currentRowIndex, currentHexIndex, rowLength) {
     //calculate hexes starting position    
     var isHexOnBorder = currentHexIndex == 0 || currentHexIndex == rowLength - 1
         || currentRowIndex == 0 || currentRowIndex == this.totalRows - 1;
     var hex_xyzCoords = this.getHexCoordinates(currentRowIndex, currentHexIndex, rowLength);
     //hook for random generation of hexes
-    //var hexTerrainType = !isHexOnBorder ? this.revealHexTerrainType() : this.WATER_HEX_COLOR;
-    var hexTerrainType = !isHexOnBorder ? CONSTANTS.BLANK_HEX_COLOR : CONSTANTS.WATER_HEX_COLOR;
-    //var hex_svgElement = this.createHexSVGElement(hexTerrainType, hex_xyzCoords, hex_XPos, hex_YPos, isHexOnBorder,"hex");
+    //var hexTerrainType = !isHexOnBorder ? this.revealHexTerrainType() : this.WATER_TYPE.COLOR;
+    var hexTerrainType = !isHexOnBorder ? CONSTANTS.BLANK_TYPE.COLOR : CONSTANTS.WATER_TYPE.COLOR;
     var hexKey = hex_xyzCoords[0].toString() + hex_xyzCoords[1].toString() + hex_xyzCoords[2].toString();
-    var newHex = new Hex(CONSTANTS.BLANK_HEX_COLOR, false, null);
+    var newHex = new Hex(CONSTANTS.BLANK_TYPE.COLOR, false, null);
     newHex.createSvgElement(this, hexTerrainType, hex_xyzCoords, hex_XPos, hex_YPos, isHexOnBorder, "hex");
     newHex.subscribeHexEvents(this);
     this.hexMap[hexKey] = newHex;
@@ -224,7 +201,7 @@ Board.prototype.createHexContainer = function(numberOfHexesToDraw) {
     var hexContainerTopLeftY = this.svgElement.getBBox().cy - hexHeight;
     var hexContainer = this.svgElement.rect(hexContainerTopLeftX, hexContainerTopLeftY, hexContainerWidth,
         hexContainerHeight, 10).attr({
-            fill: CONSTANTS.BLANK_HEX_COLOR,
+            fill: CONSTANTS.BLANK_TYPE.COLOR,
             stroke: CONSTANTS.DEFAULT_STROKE_COLOR,
             strokeWidth: CONSTANTS.DEFAULT_STROKE_WIDTH,
             class: "hexContainer"
