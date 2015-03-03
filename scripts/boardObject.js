@@ -106,7 +106,7 @@ Board.prototype.revealHexTerrainType = function() {
         terrainType = CONSTANTS.MOUNTAIN_TYPE.COLOR;
     } else if(plainRange) {
         this.currentAmtPlainHexes--;
-        terrainType = CONSTANTS.PLAIN_HEX_COLOR;
+        terrainType = CONSTANTS.PLAIN_TYPE.COLOR;
     } else if(forestRange) {
         this.currentAmtForestHexes--;
         terrainType = CONSTANTS.FOREST_TYPE.COLOR;
