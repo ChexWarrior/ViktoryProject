@@ -9,8 +9,6 @@ function Hex(terrainType, isDraggable, player) {
     this.hadBattle = false; 
     this.isMetropolis = false;
     this.terrainType = null;
-    //causes cannons and infantry to stop when moving in
-    this.slowTerrain = false;
     //map of units present on this hex
     this.units = {};
     //city, town or metropolis?
@@ -71,10 +69,6 @@ Hex.prototype.subscribeHexMouseout = function() {
              stroke: CONSTANTS.DEFAULT_STROKE_COLOR
         });
     });
-}
-
-Hex.prototype.setTerrainType = function(terrainType) {
-    
 }
 
 Hex.prototype.subscribeHexDrag = function(boardObject) {

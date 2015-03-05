@@ -85,7 +85,7 @@ Board.prototype.getHex = function(xPos, yPos, zPos) {
 
 Board.prototype.revealHexTerrainType = function() {
     //1d100
-    var terrainType = CONSTANTS.BLANK_TYPE.COLOR;
+    var terrainType = CONSTANTS.BLANK_TYPE.color;
     var randomRoll = Math.floor(Math.random() * 100 + 1);
     //calculate percent chance of particular hex being chosen
     var chanceOfMountain = Math.floor((this.currentAmtMountainHexes / this.totalPossibleHexes) * 100);
@@ -105,19 +105,19 @@ Board.prototype.revealHexTerrainType = function() {
     //when a particular hex is chosen reduce that hex total by one
     if(mountainRange) {
         this.currentAmtMountainHexes--;
-        terrainType = CONSTANTS.MOUNTAIN_TYPE.COLOR;
+        terrainType = CONSTANTS.MOUNTAIN_TYPE.color;
     } else if(plainRange) {
         this.currentAmtPlainHexes--;
-        terrainType = CONSTANTS.PLAIN_TYPE.COLOR;
+        terrainType = CONSTANTS.PLAIN_TYPE.color;
     } else if(forestRange) {
         this.currentAmtForestHexes--;
-        terrainType = CONSTANTS.FOREST_TYPE.COLOR;
+        terrainType = CONSTANTS.FOREST_TYPE.color;
     } else if(grassRange) {
         this.currentAmtGrassHexes--;
-        terrainType = CONSTANTS.GRASS_TYPE.COLOR;
+        terrainType = CONSTANTS.GRASS_TYPE.color;
     } else if(waterRange) {
         this.currentAmtWaterHexes--;
-        terrainType = CONSTANTS.WATER_TYPE.COLOR;
+        terrainType = CONSTANTS.WATER_TYPE.color;
     } else {
         console.log("ERROR: revealHexTerrainType");
     }    
@@ -157,10 +157,10 @@ Board.prototype.createHex = function(hex_XPos, hex_YPos, currentRowIndex, curren
         || currentRowIndex === 0 || currentRowIndex === this.totalRows - 1;
     var hex_xyzCoords = this.getHexCoordinates(currentRowIndex, currentHexIndex, rowLength);
     //hook for random generation of hexes
-    //var hexTerrainType = !isHexOnBorder ? this.revealHexTerrainType() : this.WATER_TYPE.COLOR;
-    var hexTerrainType = !isHexOnBorder ? CONSTANTS.BLANK_TYPE.COLOR : CONSTANTS.WATER_TYPE.COLOR;
+    //var hexTerrainType = !isHexOnBorder ? this.revealHexTerrainType() : this.WATER_TYPE.color;
+    var hexTerrainType = !isHexOnBorder ? CONSTANTS.BLANK_TYPE.color : CONSTANTS.WATER_TYPE.color;
     var hexKey = hex_xyzCoords[0].toString() + hex_xyzCoords[1].toString() + hex_xyzCoords[2].toString();
-    var newHex = new Hex(CONSTANTS.BLANK_TYPE.COLOR, false, null);
+    var newHex = new Hex(CONSTANTS.BLANK_TYPE.color, false, null);
     newHex.createSvgElement(this, hexTerrainType, hex_xyzCoords, hex_XPos, hex_YPos, isHexOnBorder, "hex");
     newHex.subscribeHexEvents(this);
     this.hexMap[hexKey] = newHex;
@@ -203,7 +203,7 @@ Board.prototype.createHexContainer = function(numberOfHexesToDraw) {
     var hexContainerTopLeftY = this.svgElement.getBBox().cy - hexHeight;
     var hexContainer = this.svgElement.rect(hexContainerTopLeftX, hexContainerTopLeftY, hexContainerWidth,
         hexContainerHeight, 10).attr({
-            fill: CONSTANTS.BLANK_TYPE.COLOR,
+            fill: CONSTANTS.BLANK_TYPE.color,
             stroke: CONSTANTS.DEFAULT_STROKE_COLOR,
             strokeWidth: CONSTANTS.DEFAULT_STROKE_WIDTH,
             class: "hexContainer"

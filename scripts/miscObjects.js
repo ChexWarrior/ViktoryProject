@@ -1,3 +1,9 @@
+
+function TerrainType(color, slowTerrain) {
+    this.color = (color === undefined) ? "white" : color;
+}
+
+//global constants object
 var CONSTANTS = {
     HEX_PATH: "l 30,20 l0,36 l -30,20 l -30,-20 l 0,-36 l 30,-20",
     HEX_WIDTH: 62,
@@ -18,25 +24,13 @@ var CONSTANTS = {
     //game constants
     INITIAL_HEX_DRAW: 5,
     //hex terrain types
-    BLANK_TYPE: {
-        COLOR:"white"
-    },
-    MOUNTAIN_TYPE: {
-        COLOR : "gray"
-    },
-    WATER_TYPE: {
-        COLOR: "blue"
-    },
-    GRASS_TYPE: {
-        COLOR: "greenyellow"
-    },
-    FOREST_TYPE: {
-        COLOR: "green"
-    },
-    PLAIN_TYPE: {
-        COLOR: "yellow"
-    }
-
+    BLANK_TYPE: new TerrainType(),
+    MOUNTAIN_TYPE: new TerrainType("gray"),
+    WATER_TYPE: new TerrainType("blue"),
+    GRASS_TYPE: new TerrainType("yellowgreen"),
+    FOREST_TYPE: new TerrainType("green"),
+    PLAIN_TYPE: new TerrainType("yellow")
 };
 
 Object.freeze(CONSTANTS);
+
