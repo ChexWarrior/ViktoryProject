@@ -1,12 +1,5 @@
-Next Steps:
-* Refactor hex drag event to work for any kind of hex (not just initial)
-    - Change condition in drag end method to check for this
-    - Add new prop to hex that indicates if it can be dragged on at this moment
-    - Ensure this prop is switched off when drag is over
-    - Rework initial hex reveal by player turn
-
-* Clean up hex svg creation method
-
-* Rename svgElement to svgelement
-
-* Don't allow access to an objects svg element anywhere except in its own methods
+Nex steps:
+* Create some kind of container for hex objects in hex drag container,
+on board object, so we can get a reference to it during the hex drag eveents.
+Why? So we can gain access to drag svg hex's hex object and use that to build a better
+copy method.
