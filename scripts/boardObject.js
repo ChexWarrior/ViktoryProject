@@ -235,7 +235,6 @@ Board.prototype.createHexesToDrag = function(hexContainer, numberOfHexesToDraw) 
 Board.prototype.displayHexChoices = function(numberOfHexesToDraw) {
     var hexContainer = this.createHexContainer(numberOfHexesToDraw);
     this.createHexesToDrag(hexContainer, numberOfHexesToDraw);
-
 }
 
 Board.prototype.processPlayerTurn = function(currentPlayerTurn) {

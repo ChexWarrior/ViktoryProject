@@ -30,14 +30,12 @@ function Hex(terrainType, isDraggable, player, boardObject, terrainType, xyzCoor
         .data("data_zPos", xyzCoords[2]);
     svgHex.data("data_hexCenterX", svgHex.getBBox().cx)
         .data("data_hexCenterY", svgHex.getBBox().cy);
-    //store reference to snap element
     this.svgElement = svgHex;
 }
 
 Hex.prototype.subscribeHexEvents = function(boardObject) {
     this.subscribeHexMouseover();
     this.subscribeHexMouseout();
-    //only subscribe to event if this is a draggable hex
     if(this.draggable) {
         this.subscribeHexDrag(boardObject);
     }
@@ -58,6 +56,14 @@ Hex.prototype.subscribeHexMouseout = function() {
         });
     });
 }
+//process events that occur when a hex is dragged over this hex
+Hex.prototype.handleDragDrop = function(dragHex) {
+    this.hidden = false;
+    this.svgElement.attr({
+        fill: dragHex.attr("fill")
+    });
+    this.isDragTarget = false;
+}
 
 Hex.prototype.subscribeHexDrag = function(boardObject) {
     var moveFunc = function(dx, dy, posx, posy) {
@@ -73,32 +79,20 @@ Hex.prototype.subscribeHexDrag = function(boardObject) {
         this.transform("t" + dx + "," + dy);
     };
     var startFunc = function(x, y) {
-        //console.log("MOVE START");
         this.attr({
             class: "movingHex"
         });
         $(".hexToDrag, .hexContainer").hide();
     };
     var endFunc = function(e) {
-        //console.log("MOVE END");
         var origHexCenterX = this.data("data_hexCenterX");
         var origHexCenterY = this.data("data_hexCenterY");
-        //store the new center of the dragged hex...
         var newHexCenterX = this.getBBox().cx;
         var newHexCenterY = this.getBBox().cy;
-        //find which hex we dragged this hex over...
         var targetHex = boardObject.getDragoverHex(newHexCenterX, newHexCenterY);
         //you dragged over a hex and it can be dragged onto
         if(targetHex !== null && targetHex.isDragTarget && targetHex.player === boardObject.currentPlayerTurn) {
-            targetHex.hidden = false;
-            var targetHexX = targetHex.svgElement.data("data_xPos").toString();
-            var targetHexY = targetHex.svgElement.data("data_yPos").toString();
-            var targetHexZ = targetHex.svgElement.data("data_zPos").toString();
-            //change target hex to have same terrain type as dragged hex
-            targetHex.svgElement.attr({
-                fill: this.attr("fill")
-            });
-            targetHex.isDragTarget = false;
+            targetHex.handleDragDrop(this);
             this.remove();
         } else { //hex has not been dragged on board
             var hexStartingPosX = this.data("data_svgXPos");

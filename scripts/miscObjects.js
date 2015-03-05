@@ -1,5 +1,5 @@
 
-function TerrainType(color, slowTerrain) {
+function TerrainType(color) {
     this.color = (color === undefined) ? "white" : color;
 }
 
