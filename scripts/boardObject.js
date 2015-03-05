@@ -160,8 +160,8 @@ Board.prototype.createHex = function(hex_XPos, hex_YPos, currentRowIndex, curren
     //var hexTerrainType = !isHexOnBorder ? this.revealHexTerrainType() : this.WATER_TYPE.color;
     var hexTerrainType = !isHexOnBorder ? CONSTANTS.BLANK_TYPE.color : CONSTANTS.WATER_TYPE.color;
     var hexKey = hex_xyzCoords[0].toString() + hex_xyzCoords[1].toString() + hex_xyzCoords[2].toString();
-    var newHex = new Hex(CONSTANTS.BLANK_TYPE.color, false, null);
-    newHex.createSvgElement(this, hexTerrainType, hex_xyzCoords, hex_XPos, hex_YPos, isHexOnBorder, "hex");
+    var newHex = new Hex(CONSTANTS.BLANK_TYPE.color, false, null, this, hexTerrainType, 
+        hex_xyzCoords, hex_XPos, hex_YPos, isHexOnBorder, "hex");
     newHex.subscribeHexEvents(this);
     this.hexMap[hexKey] = newHex;
 }
@@ -225,9 +225,8 @@ Board.prototype.createHexesToDrag = function(hexContainer, numberOfHexesToDraw) 
 
     for(var hexIndex = 0; hexIndex < numberOfHexesToDraw; hexIndex++) {
         terrainType = this.revealHexTerrainType();
-        //newSvgHex = this.createHexSVGElement(terrainType, [0,0,0], hexStartingPosX, hexStartingPosY, false, "hexToDrag");
-        newHexObject = new Hex(terrainType, true, null);
-        newHexObject.createSvgElement(this, terrainType, [0,0,0], hexStartingPosX, hexStartingPosY, false, "hexToDrag");
+        newHexObject = new Hex(terrainType, true, null, this, terrainType, [0,0,0], 
+            hexStartingPosX, hexStartingPosY, false, "hexToDrag");
         newHexObject.subscribeHexEvents(this);
         hexStartingPosX += hexWidth + (hexPadding / 2);
     }    

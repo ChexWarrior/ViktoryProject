@@ -1,8 +1,7 @@
 //Hex Constructor
-function Hex(terrainType, isDraggable, player) {
+function Hex(terrainType, isDraggable, player, boardObject, terrainType, xyzCoords, xPosition, yPosition, isOnBorder, cssClass) {
     //PROPERTIES
-    //ref to snap.svg element of hex
-    this.svgElement = null;
+
     //been revealed?
     this.hidden = true; 
     this.terrainType = null;
@@ -14,10 +13,8 @@ function Hex(terrainType, isDraggable, player) {
     this.draggable = isDraggable;
     //can be dragged onto by a draggable hex
     this.isDragTarget = false;
-}
-
-Hex.prototype.createSvgElement = function(boardObject, terrainType, xyzCoords, xPosition, yPosition, isOnBorder, cssClass) {
     var hexPathPos = "M" + xPosition.toString() + "," + yPosition.toString();
+    //svg element creation...
     var svgHex = boardObject.svgElement.path(hexPathPos + CONSTANTS.HEX_PATH)
         .attr({
             fill: terrainType,
@@ -31,11 +28,9 @@ Hex.prototype.createSvgElement = function(boardObject, terrainType, xyzCoords, x
         .data("data_xPos", xyzCoords[0])
         .data("data_yPos", xyzCoords[1])
         .data("data_zPos", xyzCoords[2]);
-
     svgHex.data("data_hexCenterX", svgHex.getBBox().cx)
         .data("data_hexCenterY", svgHex.getBBox().cy);
-
-    //store reference
+    //store reference to snap element
     this.svgElement = svgHex;
 }
 
@@ -112,12 +107,7 @@ Hex.prototype.subscribeHexDrag = function(boardObject) {
             var oldXYZCoords = [this.data("data_xPos"), this.data("data_yPos"), this.data("data_zPos")];
             var oldIsOnBorder = this.data("data_isBorderHex");
             this.remove();
-            //var dragHex = boardObject.createHexSVGElement(oldTerrainType, oldXYZCoords, hexStartingPosX, 
-            //    hexStartingPosY, oldIsOnBorder, "hexToDrag");
-            //dragHex.data("data_svgXPos", hexStartingPosX)
-            //dragHex.data("data_svgYPos", hexStartingPosY);
-            var newHexObject = new Hex(oldTerrainType, true, this.player);
-            newHexObject.createSvgElement(boardObject, oldTerrainType, oldXYZCoords, hexStartingPosX, 
+            var newHexObject = new Hex(oldTerrainType, true, this.player, boardObject, oldTerrainType, oldXYZCoords, hexStartingPosX, 
                 hexStartingPosY, oldIsOnBorder, "hexToDrag");
             newHexObject.svgElement.data("data_svgXPos", hexStartingPosX);
             newHexObject.svgElement.data("data_svgYPos", hexStartingPosY);
