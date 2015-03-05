@@ -5,14 +5,7 @@ function Hex(terrainType, isDraggable, player) {
     this.svgElement = null;
     //been revealed?
     this.hidden = true; 
-    //battle fought on this hex this turn?
-    this.hadBattle = false; 
-    this.isMetropolis = false;
     this.terrainType = null;
-    //map of units present on this hex
-    this.units = {};
-    //city, town or metropolis?
-    this.structure = null; 
     //who controls this hex
     this.player = player;
     //is a starting hex initial hex
@@ -98,25 +91,19 @@ Hex.prototype.subscribeHexDrag = function(boardObject) {
         //store the new center of the dragged hex...
         var newHexCenterX = this.getBBox().cx;
         var newHexCenterY = this.getBBox().cy;
-        var targetHexObject = null;
         //find which hex we dragged this hex over...
         var targetHex = boardObject.getDragoverHex(newHexCenterX, newHexCenterY);
-        if(targetHex !== null) {
-            targetHexObject = boardObject.getHex(targetHex.data("data_xPos"), targetHex.data("data_yPos"), 
-                targetHex.data("data_zPos"));
-        }
         //you dragged over a hex and it can be dragged onto
-        if(targetHexObject !== null && targetHexObject.isDragTarget && targetHexObject.player === boardObject.currentPlayerTurn) {
-            targetHexObject.hidden = false;
-            var targetHexX = targetHex.data("data_xPos").toString();
-            var targetHexY = targetHex.data("data_yPos").toString();
-            var targetHexZ = targetHex.data("data_zPos").toString();
+        if(targetHex !== null && targetHex.isDragTarget && targetHex.player === boardObject.currentPlayerTurn) {
+            targetHex.hidden = false;
+            var targetHexX = targetHex.svgElement.data("data_xPos").toString();
+            var targetHexY = targetHex.svgElement.data("data_yPos").toString();
+            var targetHexZ = targetHex.svgElement.data("data_zPos").toString();
             //change target hex to have same terrain type as dragged hex
-            targetHexObject.svgElement.attr({
+            targetHex.svgElement.attr({
                 fill: this.attr("fill")
             });
-            //ensure this hex can is no longer a drag target
-            targetHexObject.isDragTarget = false;
+            targetHex.isDragTarget = false;
             this.remove();
         } else { //hex has not been dragged on board
             var hexStartingPosX = this.data("data_svgXPos");

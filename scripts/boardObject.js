@@ -72,7 +72,7 @@ Board.prototype.getDragoverHex = function(xPos, yPos) {
     for(var hex in this.hexMap) {
         if(this.hexMap.hasOwnProperty(hex)) {
              if(Snap.path.isPointInside(this.hexMap[hex].svgElement, xPos, yPos)) {
-                return this.hexMap[hex].svgElement;
+                return this.hexMap[hex];
             }
         }
     }
