@@ -80,8 +80,8 @@ Hex.prototype.setTerrainType = function(terrainType) {
 Hex.prototype.subscribeHexDrag = function(boardObject) {
     var moveFunc = function(dx, dy, posx, posy) {
         //get the last position this element was dragged to (origX, origY)
-        var origX = this.data("origX") == null ? 0 : this.data("origX");
-        var origY = this.data("origY") == null ? 0 : this.data("origY");
+        var origX = this.data("origX") === undefined ? 0 : this.data("origX");
+        var origY = this.data("origY") === undefined ? 0 : this.data("origY");
         dx = dx + origX;
         dy = dy + origY;
         //store the position were moving it to now (lastX, lastY)
@@ -107,12 +107,12 @@ Hex.prototype.subscribeHexDrag = function(boardObject) {
         var targetHexObject = null;
         //find which hex we dragged this hex over...
         var targetHex = boardObject.getDragoverHex(newHexCenterX, newHexCenterY);
-        if(targetHex != null) {
+        if(targetHex !== null) {
             targetHexObject = boardObject.getHex(targetHex.data("data_xPos"), targetHex.data("data_yPos"), 
                 targetHex.data("data_zPos"));
         }
         //you dragged over a hex and it can be dragged onto
-        if(targetHexObject != null && targetHexObject.isDragTarget && targetHexObject.player == boardObject.currentPlayerTurn) {
+        if(targetHexObject !== null && targetHexObject.isDragTarget && targetHexObject.player === boardObject.currentPlayerTurn) {
             targetHexObject.hidden = false;
             var targetHexX = targetHex.data("data_xPos").toString();
             var targetHexY = targetHex.data("data_yPos").toString();

@@ -59,7 +59,7 @@ function Board(svgElement, numberOfPlayers) {
 
 Board.prototype.changeTurn = function() {
     //TODO: create method
-    if(this.currentPlayerTurn == this.numPlayers) {
+    if(this.currentPlayerTurn === this.numPlayers) {
         this.currentPlayerTurn = 0;
         this.currentRound++;
     } else {
@@ -151,8 +151,8 @@ Board.prototype.getHexCoordinates = function(hexRowIndex, hexIndex, rowLength) {
 
 Board.prototype.createHex = function(hex_XPos, hex_YPos, currentRowIndex, currentHexIndex, rowLength) {
     //calculate hexes starting position    
-    var isHexOnBorder = currentHexIndex == 0 || currentHexIndex == rowLength - 1
-        || currentRowIndex == 0 || currentRowIndex == this.totalRows - 1;
+    var isHexOnBorder = currentHexIndex === 0 || currentHexIndex === rowLength - 1
+        || currentRowIndex === 0 || currentRowIndex === this.totalRows - 1;
     var hex_xyzCoords = this.getHexCoordinates(currentRowIndex, currentHexIndex, rowLength);
     //hook for random generation of hexes
     //var hexTerrainType = !isHexOnBorder ? this.revealHexTerrainType() : this.WATER_TYPE.COLOR;
@@ -239,7 +239,7 @@ Board.prototype.displayHexChoices = function(numberOfHexesToDraw) {
 
 Board.prototype.processPlayerTurn = function(currentPlayerTurn) {
     //initial round
-    if(this.currentRound == 0) {
+    if(this.currentRound === 0) {
         this.determineStartingHexes(this.currentPlayerTurn)
         this.displayHexChoices(CONSTANTS.INITIAL_HEX_DRAW);
     } else {
@@ -250,7 +250,7 @@ Board.prototype.processPlayerTurn = function(currentPlayerTurn) {
 Board.prototype.determineStartingHexes = function(currentPlayerTurn) {
        switch(this.numPlayers) {
         case 2:
-            if(currentPlayerTurn == 1) {
+            if(currentPlayerTurn === 1) {
                 //first player initial hexes
                 this.hexMap["-330"].isDragTarget = true;
                 this.hexMap["-330"].player = 1;
