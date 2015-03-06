@@ -61,9 +61,9 @@ Board.prototype.changeTurn = function() {
     //TODO: create method
     if(this.currentPlayerTurn === this.numPlayers) {
         this.currentPlayerTurn = 0;
-        this.currentRound++;
+        this.currentRound += 1;
     } else {
-        this.currentPlayerTurn++;
+        this.currentPlayerTurn += 1;
     }
     $("#playerTurnIndicator").html("Player Turn: " + this.currentPlayerTurn);
 }
@@ -104,25 +104,25 @@ Board.prototype.revealHexTerrainType = function() {
         && randomRoll <= 100;
     //when a particular hex is chosen reduce that hex total by one
     if(mountainRange) {
-        this.currentAmtMountainHexes--;
+        this.currentAmtMountainHexes -= 1;
         terrainType = CONSTANTS.MOUNTAIN_TYPE.color;
     } else if(plainRange) {
-        this.currentAmtPlainHexes--;
+        this.currentAmtPlainHexes -= 1;
         terrainType = CONSTANTS.PLAIN_TYPE.color;
     } else if(forestRange) {
-        this.currentAmtForestHexes--;
+        this.currentAmtForestHexes -= 1;
         terrainType = CONSTANTS.FOREST_TYPE.color;
     } else if(grassRange) {
-        this.currentAmtGrassHexes--;
+        this.currentAmtGrassHexes -= 1;
         terrainType = CONSTANTS.GRASS_TYPE.color;
     } else if(waterRange) {
-        this.currentAmtWaterHexes--;
+        this.currentAmtWaterHexes -= 1;
         terrainType = CONSTANTS.WATER_TYPE.color;
     } else {
         console.log("ERROR: revealHexTerrainType");
     }    
     //reduce total amount of all hexes by one
-    this.totalPossibleHexes--;
+    this.totalPossibleHexes -= 1;
     /*console.log("Random Roll: " + randomRoll + "\nTotal Amt of Hexes: " + this.totalPossibleHexes + 
     "\nChance/Range of Mountain: " + chanceOfMountain + "/" + mountainRange +
     "\nChance/Range of Forest: " + chanceOfForest + "/" + forestRange + 
@@ -167,7 +167,7 @@ Board.prototype.createHex = function(hex_XPos, hex_YPos, currentRowIndex, curren
 }
 
 Board.prototype.createHexRow = function(currentRowLength, currentRowIndex, currentXPos, currentYPos) {
-    for(var currentHex = 0; currentHex < currentRowLength; currentHex++) {
+    for(var currentHex = 0; currentHex < currentRowLength; currentHex += 1) {
         this.createHex(currentXPos, currentYPos, currentRowIndex, currentHex, currentRowLength);
         currentXPos += CONSTANTS.HEX_WIDTH;
     }   
@@ -178,14 +178,14 @@ Board.prototype.createBoard = function() {
     var currentX_Pos = this.initialHex_XPos;
     var currentY_Pos = this.initialHex_YPos;
     var middleRow = Math.floor(this.totalRows / 2);
-    for(var currentRow = 0; currentRow < this.totalRows; currentRow++) {
+    for(var currentRow = 0; currentRow < this.totalRows; currentRow += 1) {
         this.createHexRow(currentRowLength, currentRow, currentX_Pos, currentY_Pos);
 
         if(currentRow < middleRow) {
-            currentRowLength++;
+            currentRowLength += 1;
             currentX_Pos -= CONSTANTS.HEX_WIDTH / 2;
         } else {
-            currentRowLength--;
+            currentRowLength -= 1;
             currentX_Pos += CONSTANTS.HEX_WIDTH / 2;
         }
         currentY_Pos += CONSTANTS.HEX_HEIGHT;
@@ -223,7 +223,7 @@ Board.prototype.createHexesToDrag = function(hexContainer, numberOfHexesToDraw) 
     var newSvgHex = null;
     var newHexObject = null;
 
-    for(var hexIndex = 0; hexIndex < numberOfHexesToDraw; hexIndex++) {
+    for(var hexIndex = 0; hexIndex < numberOfHexesToDraw; hexIndex += 1) {
         terrainType = this.revealHexTerrainType();
         newHexObject = new Hex(terrainType, true, null, this, terrainType, [0,0,0], 
             hexStartingPosX, hexStartingPosY, false, "hexToDrag");
