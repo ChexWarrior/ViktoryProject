@@ -4,7 +4,7 @@ function Hex(hexParameters) {
     //terrainType, isDraggable, player, boardObject, xyzCoords, xPosition, yPosition, isOnBorder, cssClass, containerArrayPos
     //been revealed?
     this.hidden = hexParameters.isHidden; 
-    this.terrainType = null;
+    this.terrainType = hexParameters.terrainType;
     //who controls this hex
     this.player = hexParameters.player;
     //is a starting hex initial hex
@@ -16,11 +16,11 @@ function Hex(hexParameters) {
     var hexPathPos = "M" + hexParameters.xPosition.toString() 
         + "," + hexParameters.yPosition.toString();
     //svg element creation...
-    var svgHex = hexParameters.boardObject.svgElement.path(hexPathPos + CONSTANTS.HEX_PATH)
+    var svgHex = hexParameters.boardObject.svgElement.path(hexPathPos + CONSTANTS.hexPath)
         .attr({
             fill: hexParameters.terrainType.color,
-            stroke: CONSTANTS.DEFAULT_STROKE_COLOR,
-            strokeWidth: CONSTANTS.DEFAULT_STROKE_WIDTH,
+            stroke: CONSTANTS.defaultStrokeColor,
+            strokeWidth: CONSTANTS.defaultStrokeWidth,
             class: hexParameters.cssClass
         })
         .data("data_svgXPos", hexParameters.xPosition)
@@ -47,7 +47,7 @@ Hex.prototype.subscribeHexEvents = function(boardObject) {
 Hex.prototype.subscribeHexMouseover = function() {
     this.svgElement.mouseover(function() {
         this.attr({
-             stroke: CONSTANTS.MOUSE_OVER_STROKE_COLOR
+             stroke: CONSTANTS.mouseOverStrokeColor
         });
     });
 }
@@ -55,7 +55,7 @@ Hex.prototype.subscribeHexMouseover = function() {
 Hex.prototype.subscribeHexMouseout = function() {
     this.svgElement.mouseout(function() {
         this.attr({
-             stroke: CONSTANTS.DEFAULT_STROKE_COLOR
+             stroke: CONSTANTS.defaultStrokeColor
         });
     });
 }
@@ -99,12 +99,12 @@ Hex.prototype.subscribeHexDrag = function(boardObject) {
             targetHex.handleDragDrop(this);
             this.remove();
         } else { //hex has not been dragged on board
+            var oldContainerPosition = this.data("data_containerArrayPosition");
             var hexStartingPosX = this.data("data_svgXPos");
             var hexStartingPosY = this.data("data_svgYPos");
-            var oldTerrainType = this.attr("fill");
+            var oldTerrainType = boardObject.containerHexArray[oldContainerPosition].terrainType;
             var oldXYZCoords = [this.data("data_xPos"), this.data("data_yPos"), this.data("data_zPos")];
             var oldIsOnBorder = this.data("data_isBorderHex");
-            var oldContainerPosition = this.data("data_containerArrayPosition");
             this.remove();
             var newHexParameters = {
                 terrainType: oldTerrainType,

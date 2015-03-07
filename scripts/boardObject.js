@@ -52,11 +52,11 @@ function Board(svgElement, numberOfPlayers) {
     this.initialHex_XPos = 250;
     this.initialHex_YPos = 10;
 
-    this.currentAmtWaterHexes = CONSTANTS.MAX_WATER_HEXES;
-    this.currentAmtForestHexes = CONSTANTS.MAX_FOREST_HEXES;
-    this.currentAmtGrassHexes = CONSTANTS.MAX_GRASS_HEXES;
-    this.currentAmtPlainHexes = CONSTANTS.MAX_PLAIN_HEXES;
-    this.currentAmtMountainHexes = CONSTANTS.MAX_MOUNTAIN_HEXES;
+    this.currentAmtWaterHexes = CONSTANTS.maxWaterHexes;
+    this.currentAmtForestHexes = CONSTANTS.maxForestHexes;
+    this.currentAmtGrassHexes = CONSTANTS.maxGrassHexes;
+    this.currentAmtPlainHexes = CONSTANTS.maxPlainHexes;
+    this.currentAmtMountainHexes = CONSTANTS.maxMountainHexes;
 }
 
 Board.prototype.changeTurn = function() {
@@ -87,7 +87,7 @@ Board.prototype.getHex = function(xPos, yPos, zPos) {
 
 Board.prototype.revealHexTerrainType = function() {
     //1d100
-    var terrainType = CONSTANTS.BLANK_TYPE.color;
+    var terrainType = CONSTANTS.blankTerrainType.color;
     var randomRoll = Math.floor(Math.random() * 100 + 1);
     //calculate percent chance of particular hex being chosen
     var chanceOfMountain = Math.floor((this.currentAmtMountainHexes / this.totalPossibleHexes) * 100);
@@ -107,19 +107,19 @@ Board.prototype.revealHexTerrainType = function() {
     //when a particular hex is chosen reduce that hex total by one
     if(mountainRange) {
         this.currentAmtMountainHexes -= 1;
-        terrainType = CONSTANTS.MOUNTAIN_TYPE;
+        terrainType = CONSTANTS.mountainTerrainType;
     } else if(plainRange) {
         this.currentAmtPlainHexes -= 1;
-        terrainType = CONSTANTS.PLAIN_TYPE;
+        terrainType = CONSTANTS.plainsTerrainType;
     } else if(forestRange) {
         this.currentAmtForestHexes -= 1;
-        terrainType = CONSTANTS.FOREST_TYPE;
+        terrainType = CONSTANTS.forestTerrainType;
     } else if(grassRange) {
         this.currentAmtGrassHexes -= 1;
-        terrainType = CONSTANTS.GRASS_TYPE;
+        terrainType = CONSTANTS.grassTerrainType;
     } else if(waterRange) {
         this.currentAmtWaterHexes -= 1;
-        terrainType = CONSTANTS.WATER_TYPE;
+        terrainType = CONSTANTS.waterTerrainType;
     } else {
         console.log("ERROR: revealHexTerrainType");
     }    
@@ -159,8 +159,8 @@ Board.prototype.createHex = function(hex_XPos, hex_YPos, currentRowIndex, curren
         || currentRowIndex === 0 || currentRowIndex === this.totalRows - 1;
     var hex_xyzCoords = this.getHexCoordinates(currentRowIndex, currentHexIndex, rowLength);
     //hook for random generation of hexes
-    //var hexTerrainType = !isHexOnBorder ? this.revealHexTerrainType() : this.WATER_TYPE.color;
-    var hexTerrainType = !isHexOnBorder ? CONSTANTS.BLANK_TYPE : CONSTANTS.WATER_TYPE;
+    //var hexTerrainType = !isHexOnBorder ? this.revealHexTerrainType() : this.waterTerrainType.color;
+    var hexTerrainType = !isHexOnBorder ? CONSTANTS.blankTerrainType : CONSTANTS.waterTerrainType;
     var hexKey = hex_xyzCoords[0].toString() + hex_xyzCoords[1].toString() + hex_xyzCoords[2].toString();
     var newHexParameters = {
         terrainType: hexTerrainType,
@@ -183,7 +183,7 @@ Board.prototype.createHex = function(hex_XPos, hex_YPos, currentRowIndex, curren
 Board.prototype.createHexRow = function(currentRowLength, currentRowIndex, currentXPos, currentYPos) {
     for(var currentHex = 0; currentHex < currentRowLength; currentHex += 1) {
         this.createHex(currentXPos, currentYPos, currentRowIndex, currentHex, currentRowLength);
-        currentXPos += CONSTANTS.HEX_WIDTH;
+        currentXPos += CONSTANTS.hexWidth;
     }   
 }
 
@@ -197,18 +197,18 @@ Board.prototype.createBoard = function() {
 
         if(currentRow < middleRow) {
             currentRowLength += 1;
-            currentX_Pos -= CONSTANTS.HEX_WIDTH / 2;
+            currentX_Pos -= CONSTANTS.hexWidth / 2;
         } else {
             currentRowLength -= 1;
-            currentX_Pos += CONSTANTS.HEX_WIDTH / 2;
+            currentX_Pos += CONSTANTS.hexWidth / 2;
         }
-        currentY_Pos += CONSTANTS.HEX_HEIGHT;
+        currentY_Pos += CONSTANTS.hexHeight;
     }
 }
 
 Board.prototype.createHexContainer = function(numberOfHexesToDraw) {
-    var hexWidth = CONSTANTS.HEX_WIDTH;
-    var hexHeight = CONSTANTS.HEX_HEIGHT;
+    var hexWidth = CONSTANTS.hexWidth;
+    var hexHeight = CONSTANTS.hexHeight;
     var centerXPosOfBoard = this.svgElement.getBBox().cx;
     var hexContainerPadding = 10;
     var hexContainerWidth = (hexWidth * numberOfHexesToDraw) + (hexContainerPadding * numberOfHexesToDraw);
@@ -217,9 +217,9 @@ Board.prototype.createHexContainer = function(numberOfHexesToDraw) {
     var hexContainerTopLeftY = this.svgElement.getBBox().cy - hexHeight;
     var hexContainer = this.svgElement.rect(hexContainerTopLeftX, hexContainerTopLeftY, hexContainerWidth,
         hexContainerHeight, 10).attr({
-            fill: CONSTANTS.BLANK_TYPE.color,
-            stroke: CONSTANTS.DEFAULT_STROKE_COLOR,
-            strokeWidth: CONSTANTS.DEFAULT_STROKE_WIDTH,
+            fill: CONSTANTS.blankTerrainType.color,
+            stroke: CONSTANTS.defaultStrokeColor,
+            strokeWidth: CONSTANTS.defaultStrokeWidth,
             class: "hexContainer"
         });
 
@@ -228,8 +228,8 @@ Board.prototype.createHexContainer = function(numberOfHexesToDraw) {
 
 Board.prototype.createHexesToDrag = function(hexContainer, numberOfHexesToDraw) {
     var hexPadding = 10;
-    var hexWidth = CONSTANTS.HEX_WIDTH;
-    var hexHeight = CONSTANTS.HEX_HEIGHT;
+    var hexWidth = CONSTANTS.hexWidth;
+    var hexHeight = CONSTANTS.hexHeight;
     var hexStartingPosX = hexContainer.getBBox().x + (hexWidth / 2) + hexPadding;
     var hexStartingPosY = hexContainer.getBBox().y + 3;
     var terrainType = "";
@@ -268,7 +268,7 @@ Board.prototype.processPlayerTurn = function(currentPlayerTurn) {
     //initial round
     if(this.currentRound === 0) {
         this.determineStartingHexes(this.currentPlayerTurn)
-        this.displayHexChoices(CONSTANTS.INITIAL_HEX_DRAW);
+        this.displayHexChoices(CONSTANTS.initialHexDraw);
     } else {
         //TODO: Create normal player turn flow
     }
