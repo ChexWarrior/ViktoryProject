@@ -1,5 +1,17 @@
 Nex steps:
 * Create some kind of container for hex objects in hex drag container,
-on board object, so we can get a reference to it during the hex drag eveents.
+on board object, so we can get a reference to it during the hex drag events.
 Why? So we can gain access to drag svg hex's hex object and use that to build a better
 copy method.
+
+Drag Events
+
+1) Drag from container
+    * Initial drag event (picking hexes that are randomly revealed)
+    * Copy dragged hex to new pos on board, remove hex at old pos and remove hex from container
+    * On successful drag to board flip the replacement hex to be a drag target resubscribe to events
+
+2) Drag from board
+    * Can only happend after atleast one drag from container
+    * Allows player to redrag hexes if they change their minds about position
+    * Copy dragged hex to new pos and blank out old hex

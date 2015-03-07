@@ -85,6 +85,10 @@ Board.prototype.getHex = function(xPos, yPos, zPos) {
     return this.hexMap[xPos.toString() + yPos.toString() + zPos.toString()];
 }
 
+Board.prototype.setHex = function(xPos, yPos, zPos, newHex) {
+    this.hexMap[xPos.toString() + yPos.toString() + zPos.toString()] = newHex;
+}
+
 Board.prototype.revealHexTerrainType = function() {
     //1d100
     var terrainType = CONSTANTS.blankTerrainType.color;
@@ -299,4 +303,8 @@ Board.prototype.determineStartingHexes = function(currentPlayerTurn) {
         //TODO: cases for other number of players
         default:
     }
+}
+
+Board.prototype.undoLastAction = function() {
+    
 }

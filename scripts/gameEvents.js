@@ -9,6 +9,9 @@ $(document).ready(function() {
                $("#endTurnBtn").on("click", function() {
                     gameBoard.changeTurn();
                });
+               $("#undoBtn").on("click", function() {
+                    gameBoard.undoLastAction();
+               });
                gameBoard.createBoard();
                gameBoard.determineStartingHexes();
                gameBoard.processPlayerTurn();
