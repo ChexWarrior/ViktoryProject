@@ -1,7 +1,6 @@
 //Hex Constructor
 function Hex(hexParameters) {
     //PROPERTIES
-    //terrainType, isDraggable, player, boardObject, xyzCoords, xPosition, yPosition, isOnBorder, cssClass, containerArrayPos
     //been revealed?
     this.hidden = hexParameters.isHidden; 
     this.terrainType = hexParameters.terrainType;
@@ -99,24 +98,18 @@ Hex.prototype.subscribeHexDrag = function(boardObject) {
             targetHex.handleDragDrop(this);
             this.remove();
         } else { //hex has not been dragged on board
-            var oldContainerPosition = this.data("data_containerArrayPosition");
-            var hexStartingPosX = this.data("data_svgXPos");
-            var hexStartingPosY = this.data("data_svgYPos");
-            var oldTerrainType = boardObject.containerHexArray[oldContainerPosition].terrainType;
-            var oldXYZCoords = [this.data("data_xPos"), this.data("data_yPos"), this.data("data_zPos")];
-            var oldIsOnBorder = this.data("data_isBorderHex");
             this.remove();
             var newHexParameters = {
-                terrainType: oldTerrainType,
+                terrainType: boardObject.containerHexArray[this.data("data_containerArrayPosition")].terrainType,
                 isDraggable: true,
-                player: this.player,
+                player: null,
                 boardObject: boardObject,
-                xyzCoords: oldXYZCoords,
-                xPosition: hexStartingPosX,
-                yPosition: hexStartingPosY,
-                isOnBorder: oldIsOnBorder,
+                xyzCoords: [this.data("data_xPos"), this.data("data_yPos"), this.data("data_zPos")],
+                xPosition: this.data("data_svgXPos"),
+                yPosition: this.data("data_svgYPos"),
+                isOnBorder: this.data("data_isBorderHex"),
                 cssClass: "hexToDrag",
-                containerArrayPos: oldContainerPosition,
+                containerArrayPos: this.data("data_containerArrayPosition"),
                 isHidden: false
             };
             var newHexObject = new Hex(newHexParameters);

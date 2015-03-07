@@ -2,7 +2,6 @@
 function TerrainType(color) {
     this.color = (color === undefined) ? "white" : color;
 }
-
 //global constants object
 var CONSTANTS = {
     hexPath: "l 30,20 l0,36 l -30,20 l -30,-20 l 0,-36 l 30,-20",

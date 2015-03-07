@@ -130,7 +130,8 @@ Board.prototype.revealHexTerrainType = function() {
     "\nChance/Range of Forest: " + chanceOfForest + "/" + forestRange + 
     "\nChance/Range of Grassland: " + chanceOfGrass + "/" + grassRange +
     "\nChance/Range of Plain: " + chanceOfPlain + "/" + plainRange +
-    "\nChance/Range of Water: " + chanceOfWater + "/" + waterRange);*/
+    "\nChance/Range of Water: " + chanceOfWater + "/" + waterRange);
+    */
     return terrainType;
 }
 
@@ -158,12 +159,9 @@ Board.prototype.createHex = function(hex_XPos, hex_YPos, currentRowIndex, curren
     var isHexOnBorder = currentHexIndex === 0 || currentHexIndex === rowLength - 1
         || currentRowIndex === 0 || currentRowIndex === this.totalRows - 1;
     var hex_xyzCoords = this.getHexCoordinates(currentRowIndex, currentHexIndex, rowLength);
-    //hook for random generation of hexes
-    //var hexTerrainType = !isHexOnBorder ? this.revealHexTerrainType() : this.waterTerrainType.color;
-    var hexTerrainType = !isHexOnBorder ? CONSTANTS.blankTerrainType : CONSTANTS.waterTerrainType;
     var hexKey = hex_xyzCoords[0].toString() + hex_xyzCoords[1].toString() + hex_xyzCoords[2].toString();
     var newHexParameters = {
-        terrainType: hexTerrainType,
+        terrainType: !isHexOnBorder ? CONSTANTS.blankTerrainType : CONSTANTS.waterTerrainType,
         isDraggable: false,
         player: null,
         boardObject: this,
@@ -228,13 +226,8 @@ Board.prototype.createHexContainer = function(numberOfHexesToDraw) {
 
 Board.prototype.createHexesToDrag = function(hexContainer, numberOfHexesToDraw) {
     var hexPadding = 10;
-    var hexWidth = CONSTANTS.hexWidth;
-    var hexHeight = CONSTANTS.hexHeight;
-    var hexStartingPosX = hexContainer.getBBox().x + (hexWidth / 2) + hexPadding;
+    var hexStartingPosX = hexContainer.getBBox().x + (CONSTANTS.hexWidth / 2) + hexPadding;
     var hexStartingPosY = hexContainer.getBBox().y + 3;
-    var terrainType = "";
-    var hexStartingPos = "";
-    var newSvgHex = null;
     var newHexObject = null;
     var newHexParameters = {};
 
@@ -254,7 +247,7 @@ Board.prototype.createHexesToDrag = function(hexContainer, numberOfHexesToDraw) 
         };
         newHexObject = new Hex(newHexParameters);
         newHexObject.subscribeHexEvents(this);
-        hexStartingPosX += hexWidth + (hexPadding / 2);
+        hexStartingPosX += CONSTANTS.hexWidth + (hexPadding / 2);
         this.containerHexArray[hexIndex] = newHexObject;
     }  
 }
