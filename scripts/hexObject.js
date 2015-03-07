@@ -108,7 +108,7 @@ Hex.prototype.subscribeHexDrag = function(boardObject) {
                 xPosition: this.data("data_svgXPos"),
                 yPosition: this.data("data_svgYPos"),
                 isOnBorder: this.data("data_isBorderHex"),
-                cssClass: "hexToDrag",
+                cssClass: "hexToDrag hex",
                 containerArrayPos: this.data("data_containerArrayPosition"),
                 isHidden: false
             };

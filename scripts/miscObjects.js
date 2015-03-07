@@ -1,4 +1,4 @@
-
+//terrain type object constructor
 function TerrainType(color) {
     this.color = (color === undefined) ? "white" : color;
 }

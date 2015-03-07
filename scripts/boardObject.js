@@ -241,7 +241,7 @@ Board.prototype.createHexesToDrag = function(hexContainer, numberOfHexesToDraw) 
             xPosition: hexStartingPosX,
             yPosition: hexStartingPosY,
             isOnBorder: false,
-            cssClass: "hexToDrag",
+            cssClass: "hexToDrag hex",
             containerArrayPos: hexIndex,
             isHidden: false
         };
