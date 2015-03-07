@@ -7,6 +7,8 @@ function Board(svgElement, numberOfPlayers) {
     this.currentPlayerTurn = 1;
     //will contain all hexes on board
     this.hexMap = {};
+    //will contain hexes in drag container
+    this.containerHexArray = [];
     this.numPlayers = numberOfPlayers;
     //initialize following properties based on number of players
     switch(this.numPlayers) {
@@ -105,19 +107,19 @@ Board.prototype.revealHexTerrainType = function() {
     //when a particular hex is chosen reduce that hex total by one
     if(mountainRange) {
         this.currentAmtMountainHexes -= 1;
-        terrainType = CONSTANTS.MOUNTAIN_TYPE.color;
+        terrainType = CONSTANTS.MOUNTAIN_TYPE;
     } else if(plainRange) {
         this.currentAmtPlainHexes -= 1;
-        terrainType = CONSTANTS.PLAIN_TYPE.color;
+        terrainType = CONSTANTS.PLAIN_TYPE;
     } else if(forestRange) {
         this.currentAmtForestHexes -= 1;
-        terrainType = CONSTANTS.FOREST_TYPE.color;
+        terrainType = CONSTANTS.FOREST_TYPE;
     } else if(grassRange) {
         this.currentAmtGrassHexes -= 1;
-        terrainType = CONSTANTS.GRASS_TYPE.color;
+        terrainType = CONSTANTS.GRASS_TYPE;
     } else if(waterRange) {
         this.currentAmtWaterHexes -= 1;
-        terrainType = CONSTANTS.WATER_TYPE.color;
+        terrainType = CONSTANTS.WATER_TYPE;
     } else {
         console.log("ERROR: revealHexTerrainType");
     }    
@@ -158,10 +160,22 @@ Board.prototype.createHex = function(hex_XPos, hex_YPos, currentRowIndex, curren
     var hex_xyzCoords = this.getHexCoordinates(currentRowIndex, currentHexIndex, rowLength);
     //hook for random generation of hexes
     //var hexTerrainType = !isHexOnBorder ? this.revealHexTerrainType() : this.WATER_TYPE.color;
-    var hexTerrainType = !isHexOnBorder ? CONSTANTS.BLANK_TYPE.color : CONSTANTS.WATER_TYPE.color;
+    var hexTerrainType = !isHexOnBorder ? CONSTANTS.BLANK_TYPE : CONSTANTS.WATER_TYPE;
     var hexKey = hex_xyzCoords[0].toString() + hex_xyzCoords[1].toString() + hex_xyzCoords[2].toString();
-    var newHex = new Hex(CONSTANTS.BLANK_TYPE.color, false, null, this, hexTerrainType, 
-        hex_xyzCoords, hex_XPos, hex_YPos, isHexOnBorder, "hex");
+    var newHexParameters = {
+        terrainType: hexTerrainType,
+        isDraggable: false,
+        player: null,
+        boardObject: this,
+        xyzCoords: hex_xyzCoords,
+        xPosition: hex_XPos,
+        yPosition: hex_YPos,
+        isOnBorder: isHexOnBorder,
+        cssClass: "hex",
+        containerArrayPos: null,
+        isHidden: true
+    };
+    var newHex = new Hex(newHexParameters);
     newHex.subscribeHexEvents(this);
     this.hexMap[hexKey] = newHex;
 }
@@ -222,14 +236,27 @@ Board.prototype.createHexesToDrag = function(hexContainer, numberOfHexesToDraw) 
     var hexStartingPos = "";
     var newSvgHex = null;
     var newHexObject = null;
+    var newHexParameters = {};
 
     for(var hexIndex = 0; hexIndex < numberOfHexesToDraw; hexIndex += 1) {
-        terrainType = this.revealHexTerrainType();
-        newHexObject = new Hex(terrainType, true, null, this, terrainType, [0,0,0], 
-            hexStartingPosX, hexStartingPosY, false, "hexToDrag");
+        newHexParameters = {
+            terrainType: this.revealHexTerrainType(),
+            isDraggable: true,
+            player: null,
+            boardObject: this,
+            xyzCoords: [0, 0, 0],
+            xPosition: hexStartingPosX,
+            yPosition: hexStartingPosY,
+            isOnBorder: false,
+            cssClass: "hexToDrag",
+            containerArrayPos: hexIndex,
+            isHidden: false
+        };
+        newHexObject = new Hex(newHexParameters);
         newHexObject.subscribeHexEvents(this);
         hexStartingPosX += hexWidth + (hexPadding / 2);
-    }    
+        this.containerHexArray[hexIndex] = newHexObject;
+    }  
 }
 
 Board.prototype.displayHexChoices = function(numberOfHexesToDraw) {

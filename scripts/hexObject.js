@@ -1,33 +1,36 @@
 //Hex Constructor
-function Hex(terrainType, isDraggable, player, boardObject, terrainType, xyzCoords, xPosition, yPosition, isOnBorder, cssClass) {
+function Hex(hexParameters) {
     //PROPERTIES
-
+    //terrainType, isDraggable, player, boardObject, xyzCoords, xPosition, yPosition, isOnBorder, cssClass, containerArrayPos
     //been revealed?
-    this.hidden = true; 
+    this.hidden = hexParameters.isHidden; 
     this.terrainType = null;
     //who controls this hex
-    this.player = player;
+    this.player = hexParameters.player;
     //is a starting hex initial hex
     //this.initial = false;
     //is being dragged into place
-    this.draggable = isDraggable;
+    this.draggable = hexParameters.isDraggable;
     //can be dragged onto by a draggable hex
     this.isDragTarget = false;
-    var hexPathPos = "M" + xPosition.toString() + "," + yPosition.toString();
+    var hexPathPos = "M" + hexParameters.xPosition.toString() 
+        + "," + hexParameters.yPosition.toString();
     //svg element creation...
-    var svgHex = boardObject.svgElement.path(hexPathPos + CONSTANTS.HEX_PATH)
+    var svgHex = hexParameters.boardObject.svgElement.path(hexPathPos + CONSTANTS.HEX_PATH)
         .attr({
-            fill: terrainType,
+            fill: hexParameters.terrainType.color,
             stroke: CONSTANTS.DEFAULT_STROKE_COLOR,
             strokeWidth: CONSTANTS.DEFAULT_STROKE_WIDTH,
-            class: cssClass
+            class: hexParameters.cssClass
         })
-        .data("data_svgXPos", xPosition)
-        .data("data_svgYPos", yPosition)
-        .data("data_isBorderHex", isOnBorder)
-        .data("data_xPos", xyzCoords[0])
-        .data("data_yPos", xyzCoords[1])
-        .data("data_zPos", xyzCoords[2]);
+        .data("data_svgXPos", hexParameters.xPosition)
+        .data("data_svgYPos", hexParameters.yPosition)
+        .data("data_isBorderHex", hexParameters.isOnBorder)
+        .data("data_xPos", hexParameters.xyzCoords[0])
+        .data("data_yPos", hexParameters.xyzCoords[1])
+        .data("data_containerArrayPosition", 
+            hexParameters.containerArrayPos === undefined ? null : hexParameters.containerArrayPos)
+        .data("data_zPos", hexParameters.xyzCoords[2]);
     svgHex.data("data_hexCenterX", svgHex.getBBox().cx)
         .data("data_hexCenterY", svgHex.getBBox().cy);
     this.svgElement = svgHex;
@@ -92,6 +95,7 @@ Hex.prototype.subscribeHexDrag = function(boardObject) {
         var targetHex = boardObject.getDragoverHex(newHexCenterX, newHexCenterY);
         //you dragged over a hex and it can be dragged onto
         if(targetHex !== null && targetHex.isDragTarget && targetHex.player === boardObject.currentPlayerTurn) {
+            var oldArrayPos = this.data("data_containerArrayPosition");
             targetHex.handleDragDrop(this);
             this.remove();
         } else { //hex has not been dragged on board
@@ -100,11 +104,22 @@ Hex.prototype.subscribeHexDrag = function(boardObject) {
             var oldTerrainType = this.attr("fill");
             var oldXYZCoords = [this.data("data_xPos"), this.data("data_yPos"), this.data("data_zPos")];
             var oldIsOnBorder = this.data("data_isBorderHex");
+            var oldContainerPosition = this.data("data_containerArrayPosition");
             this.remove();
-            var newHexObject = new Hex(oldTerrainType, true, this.player, boardObject, oldTerrainType, oldXYZCoords, hexStartingPosX, 
-                hexStartingPosY, oldIsOnBorder, "hexToDrag");
-            newHexObject.svgElement.data("data_svgXPos", hexStartingPosX);
-            newHexObject.svgElement.data("data_svgYPos", hexStartingPosY);
+            var newHexParameters = {
+                terrainType: oldTerrainType,
+                isDraggable: true,
+                player: this.player,
+                boardObject: boardObject,
+                xyzCoords: oldXYZCoords,
+                xPosition: hexStartingPosX,
+                yPosition: hexStartingPosY,
+                isOnBorder: oldIsOnBorder,
+                cssClass: "hexToDrag",
+                containerArrayPos: oldContainerPosition,
+                isHidden: false
+            };
+            var newHexObject = new Hex(newHexParameters);
             newHexObject.subscribeHexEvents(boardObject);
         }
         $(".hexToDrag, .hexContainer").show();
