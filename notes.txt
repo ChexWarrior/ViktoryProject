@@ -15,3 +15,8 @@ Drag Events
     * Can only happend after atleast one drag from container
     * Allows player to redrag hexes if they change their minds about position
     * Copy dragged hex to new pos and blank out old hex
+
+3) What constitutes a helper function?
+    * A method that by itself has no useful function
+    * A method that helps another method do its job
+    * A method that isn't useful more than once?

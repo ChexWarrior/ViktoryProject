@@ -13,7 +13,6 @@ $(document).ready(function() {
                     gameBoard.undoLastAction();
                });
                gameBoard.createBoard();
-               gameBoard.determineStartingHexes();
                gameBoard.processPlayerTurn();
             }
         });
